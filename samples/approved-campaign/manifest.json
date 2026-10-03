@@ -1,0 +1,269 @@
+{
+  "schemaVersion": 1,
+  "campaignId": "sample-0001",
+  "title": "A softer start to autumn",
+  "generatedAt": "2026-10-03T12:00:00.000Z",
+  "sourceRevision": 1,
+  "contextFingerprint": "3f68c21d",
+  "mode": "sample-data-simulated-providers",
+  "channelSpecVersion": "google-pmax-review-2026-10-03",
+  "limitations": [
+    "Original SVG compositions are review drafts, not supported platform raster uploads.",
+    "Copy CSV is a review artifact, not a verified Google import schema.",
+    "Video output is a production brief, not a rendered video.",
+    "Validation is a limited deterministic rule set; platform policy and merchant review remain necessary.",
+    "Export does not authorize publishing or advertising spend."
+  ],
+  "assets": [
+    {
+      "assetId": "image-1",
+      "versionId": "sample-0006",
+      "versionNumber": 1,
+      "filename": "image-1-v1.svg",
+      "approvedAt": "2026-10-03T12:00:00.000Z",
+      "sourceReferenceIds": [
+        "product:aster-dawn",
+        "image:aster-dawn",
+        "product:aster-dusk",
+        "image:aster-dusk",
+        "brand:aster-coffee",
+        "page:aster-coffee"
+      ],
+      "validation": [
+        {
+          "code": "svg-review-only",
+          "severity": "warning",
+          "message": "SVG files are review compositions. Google image uploads require supported raster formats; this is not a complete launch-ready asset group."
+        },
+        {
+          "code": "deterministic-limits",
+          "severity": "info",
+          "message": "Checks cover configured counts, lengths, references, stable package text and a limited claim vocabulary. Merchant review remains necessary."
+        }
+      ]
+    },
+    {
+      "assetId": "image-2",
+      "versionId": "sample-0009",
+      "versionNumber": 1,
+      "filename": "image-2-v1.svg",
+      "approvedAt": "2026-10-03T12:00:00.000Z",
+      "sourceReferenceIds": [
+        "product:aster-dawn",
+        "image:aster-dawn",
+        "product:aster-dusk",
+        "image:aster-dusk",
+        "brand:aster-coffee",
+        "page:aster-coffee"
+      ],
+      "validation": [
+        {
+          "code": "svg-review-only",
+          "severity": "warning",
+          "message": "SVG files are review compositions. Google image uploads require supported raster formats; this is not a complete launch-ready asset group."
+        },
+        {
+          "code": "deterministic-limits",
+          "severity": "info",
+          "message": "Checks cover configured counts, lengths, references, stable package text and a limited claim vocabulary. Merchant review remains necessary."
+        }
+      ]
+    },
+    {
+      "assetId": "image-3",
+      "versionId": "sample-0012",
+      "versionNumber": 1,
+      "filename": "image-3-v1.svg",
+      "approvedAt": "2026-10-03T12:00:00.000Z",
+      "sourceReferenceIds": [
+        "product:aster-dawn",
+        "image:aster-dawn",
+        "product:aster-dusk",
+        "image:aster-dusk",
+        "brand:aster-coffee",
+        "page:aster-coffee"
+      ],
+      "validation": [
+        {
+          "code": "svg-review-only",
+          "severity": "warning",
+          "message": "SVG files are review compositions. Google image uploads require supported raster formats; this is not a complete launch-ready asset group."
+        },
+        {
+          "code": "deterministic-limits",
+          "severity": "info",
+          "message": "Checks cover configured counts, lengths, references, stable package text and a limited claim vocabulary. Merchant review remains necessary."
+        }
+      ]
+    },
+    {
+      "assetId": "image-4",
+      "versionId": "sample-0015",
+      "versionNumber": 1,
+      "filename": "image-4-v1.svg",
+      "approvedAt": "2026-10-03T12:00:00.000Z",
+      "sourceReferenceIds": [
+        "product:aster-dawn",
+        "image:aster-dawn",
+        "product:aster-dusk",
+        "image:aster-dusk",
+        "brand:aster-coffee",
+        "page:aster-coffee"
+      ],
+      "validation": [
+        {
+          "code": "svg-review-only",
+          "severity": "warning",
+          "message": "SVG files are review compositions. Google image uploads require supported raster formats; this is not a complete launch-ready asset group."
+        },
+        {
+          "code": "deterministic-limits",
+          "severity": "info",
+          "message": "Checks cover configured counts, lengths, references, stable package text and a limited claim vocabulary. Merchant review remains necessary."
+        }
+      ]
+    },
+    {
+      "assetId": "image-5",
+      "versionId": "sample-0018",
+      "versionNumber": 1,
+      "filename": "image-5-v1.svg",
+      "approvedAt": "2026-10-03T12:00:00.000Z",
+      "sourceReferenceIds": [
+        "product:aster-dawn",
+        "image:aster-dawn",
+        "product:aster-dusk",
+        "image:aster-dusk",
+        "brand:aster-coffee",
+        "page:aster-coffee"
+      ],
+      "validation": [
+        {
+          "code": "svg-review-only",
+          "severity": "warning",
+          "message": "SVG files are review compositions. Google image uploads require supported raster formats; this is not a complete launch-ready asset group."
+        },
+        {
+          "code": "deterministic-limits",
+          "severity": "info",
+          "message": "Checks cover configured counts, lengths, references, stable package text and a limited claim vocabulary. Merchant review remains necessary."
+        }
+      ]
+    },
+    {
+      "assetId": "image-6",
+      "versionId": "sample-0021",
+      "versionNumber": 1,
+      "filename": "image-6-v1.svg",
+      "approvedAt": "2026-10-03T12:00:00.000Z",
+      "sourceReferenceIds": [
+        "product:aster-dawn",
+        "image:aster-dawn",
+        "product:aster-dusk",
+        "image:aster-dusk",
+        "brand:aster-coffee",
+        "page:aster-coffee"
+      ],
+      "validation": [
+        {
+          "code": "svg-review-only",
+          "severity": "warning",
+          "message": "SVG files are review compositions. Google image uploads require supported raster formats; this is not a complete launch-ready asset group."
+        },
+        {
+          "code": "deterministic-limits",
+          "severity": "info",
+          "message": "Checks cover configured counts, lengths, references, stable package text and a limited claim vocabulary. Merchant review remains necessary."
+        }
+      ]
+    },
+    {
+      "assetId": "copy",
+      "versionId": "sample-0024",
+      "versionNumber": 1,
+      "filename": "copy-v1.json",
+      "approvedAt": "2026-10-03T12:00:00.000Z",
+      "sourceReferenceIds": [
+        "product:aster-dawn",
+        "image:aster-dawn",
+        "product:aster-dusk",
+        "image:aster-dusk",
+        "brand:aster-coffee",
+        "page:aster-coffee"
+      ],
+      "validation": [
+        {
+          "code": "deterministic-limits",
+          "severity": "info",
+          "message": "Checks cover configured counts, lengths, references, stable package text and a limited claim vocabulary. Merchant review remains necessary."
+        }
+      ]
+    },
+    {
+      "assetId": "landing",
+      "versionId": "sample-0027",
+      "versionNumber": 1,
+      "filename": "landing-v1.json",
+      "approvedAt": "2026-10-03T12:00:00.000Z",
+      "sourceReferenceIds": [
+        "product:aster-dawn",
+        "image:aster-dawn",
+        "product:aster-dusk",
+        "image:aster-dusk",
+        "brand:aster-coffee",
+        "page:aster-coffee"
+      ],
+      "validation": [
+        {
+          "code": "deterministic-limits",
+          "severity": "info",
+          "message": "Checks cover configured counts, lengths, references, stable package text and a limited claim vocabulary. Merchant review remains necessary."
+        }
+      ]
+    },
+    {
+      "assetId": "video",
+      "versionId": "sample-0030",
+      "versionNumber": 1,
+      "filename": "video-v1.json",
+      "approvedAt": "2026-10-03T12:00:00.000Z",
+      "sourceReferenceIds": [
+        "product:aster-dawn",
+        "image:aster-dawn",
+        "product:aster-dusk",
+        "image:aster-dusk",
+        "brand:aster-coffee",
+        "page:aster-coffee"
+      ],
+      "validation": [
+        {
+          "code": "deterministic-limits",
+          "severity": "info",
+          "message": "Checks cover configured counts, lengths, references, stable package text and a limited claim vocabulary. Merchant review remains necessary."
+        }
+      ]
+    },
+    {
+      "assetId": "blueprint",
+      "versionId": "sample-0033",
+      "versionNumber": 1,
+      "filename": "blueprint-v1.json",
+      "approvedAt": "2026-10-03T12:00:00.000Z",
+      "sourceReferenceIds": [
+        "product:aster-dawn",
+        "image:aster-dawn",
+        "product:aster-dusk",
+        "image:aster-dusk",
+        "brand:aster-coffee",
+        "page:aster-coffee"
+      ],
+      "validation": [
+        {
+          "code": "deterministic-limits",
+          "severity": "info",
+          "message": "Checks cover configured counts, lengths, references, stable package text and a limited claim vocabulary. Merchant review remains necessary."
+        }
+      ]
+    }
+  ]
+}

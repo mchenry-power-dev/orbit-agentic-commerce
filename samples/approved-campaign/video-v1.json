@@ -1,0 +1,29 @@
+{
+  "type": "video",
+  "title": "Autumn collection · video concept",
+  "durationSeconds": 20,
+  "script": "A quieter kind of coffee break\nA medium roast whole bean coffee with tasting notes of cocoa and orange.\nExplore the collection.\nFind your next everyday ritual.",
+  "shots": [
+    {
+      "seconds": 4,
+      "visual": "Wide composition: Dawn Blend & Dusk Roast with unchanged packaging.",
+      "voiceover": "A quieter kind of coffee break"
+    },
+    {
+      "seconds": 7,
+      "visual": "Close view of Dawn Blend; show the package labels.",
+      "voiceover": "A medium roast whole bean coffee with tasting notes of cocoa and orange."
+    },
+    {
+      "seconds": 5,
+      "visual": "Dusk Roast beside Dawn Blend on a quiet geometric surface.",
+      "voiceover": "Explore the collection."
+    },
+    {
+      "seconds": 4,
+      "visual": "End card: Aster Coffee Works; “Explore the collection”.",
+      "voiceover": "Find your next everyday ritual."
+    }
+  ],
+  "generationInstructions": "Fictional sample products only. Audience: Curious home coffee drinkers. Direction: An autumn coffee ritual with warm light and generous space.. Tone: Calm and inviting. Maintain package labels. No invented product claims or reviews.  This is a production brief; no video has been rendered."
+}

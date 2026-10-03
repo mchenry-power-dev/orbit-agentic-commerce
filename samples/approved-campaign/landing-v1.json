@@ -1,0 +1,38 @@
+{
+  "type": "landing",
+  "hero": {
+    "eyebrow": "Aster Coffee Works · Autumn collection",
+    "title": "Autumn begins with a quiet cup.",
+    "body": "Dawn Blend & Dusk Roast. Introduce the collection. A quieter kind of coffee break",
+    "cta": "Explore the collection",
+    "imageAssetId": "image-2"
+  },
+  "benefits": [
+    {
+      "title": "Dawn Blend",
+      "body": "A medium roast whole bean coffee with tasting notes of cocoa and orange."
+    },
+    {
+      "title": "Dusk Roast",
+      "body": "A dark roast whole bean coffee with tasting notes of cacao and toasted almond."
+    }
+  ],
+  "story": {
+    "title": "A collection with clear details",
+    "body": "Aster Coffee Works is a fictional sample merchant. Dawn Blend: Whole bean coffee; Medium roast; Tasting notes: cocoa and orange; 250 g bag. Dusk Roast: Whole bean coffee; Dark roast; Tasting notes: cacao and toasted almond; 250 g bag."
+  },
+  "supporting": {
+    "title": "Explore your next routine",
+    "body": "Created for curious home coffee drinkers. Campaign direction: An autumn coffee ritual with warm light and generous space."
+  },
+  "faq": [
+    {
+      "question": "What comes with Dawn Blend?",
+      "answer": "Whole bean coffee. Medium roast. Tasting notes: cocoa and orange. 250 g bag."
+    },
+    {
+      "question": "What comes with Dusk Roast?",
+      "answer": "Whole bean coffee. Dark roast. Tasting notes: cacao and toasted almond. 250 g bag."
+    }
+  ]
+}
