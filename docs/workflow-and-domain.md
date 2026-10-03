@@ -34,7 +34,7 @@ stateDiagram-v2
   Reviewable --> Approved: approve exact version
   Reviewable --> Rejected: reject
   Rejected --> Draft: request revision
-  Invalid --> Draft: edit / revise
+  Invalid --> Draft
   Approved --> Draft: edit / revise one asset
   Approved --> Stale: change core brief / context
   Reviewable --> Stale: change core brief / context
@@ -42,7 +42,7 @@ stateDiagram-v2
   Approved --> Exported: packet gates pass
 ```
 
-The diagram describes lifecycle meaning; source represents these conditions separately. “Exported” denotes the download event, not a stored asset status. Approval never migrates automatically to an edited version. Regenerating one item appends that item's new version and preserves unrelated content/approvals. A core brief/context change requires a current plan and new review for affected assets.
+The diagram describes lifecycle meaning; source represents these conditions separately. Invalid drafts return to Draft when edited or revised. “Exported” denotes the download event, not a stored asset status. Approval never migrates automatically to an edited version. Regenerating one item appends that item's new version and preserves unrelated content/approvals. A core brief/context change requires a current plan and new review for affected assets.
 
 An invalid, missing, stale, or unreviewed required output blocks export with a reason. Rejection is a merchant decision, not a provider exception. Revision notes persist with the campaign. Stored preferences such as avoiding crowded compositions are reused for supported future planning; they are not model training.
 
