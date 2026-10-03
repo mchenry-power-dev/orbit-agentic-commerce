@@ -37,4 +37,4 @@ Purpose, provenance, findings, revision requests, and exact-version approval are
 
 </details>
 
-Follow the [demo guide](demo-guide.md) to reproduce the journey. [Architecture](architecture.md), [review lifecycle](workflow-and-domain.md#review-and-revision), and [channel scope](channel-specs.md) explain the implementation behind the screens.
+Open the [working demo](https://mchenry-power-dev.github.io/orbit-agentic-commerce/) or follow the [demo guide](demo-guide.md) to reproduce the journey. [Architecture](architecture.md), [review lifecycle](workflow-and-domain.md#review-and-revision), and [channel scope](channel-specs.md) explain the implementation behind the screens.

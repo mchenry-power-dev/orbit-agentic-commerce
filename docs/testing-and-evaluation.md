@@ -59,6 +59,8 @@ Verification date: **October 3, 2026**.
 
 The complete check passed again after `npm ci` in an isolated clean directory. Final desktop and narrow captures were visually inspected for readable stacking, intact compositions, and visible review actions; [public gallery](product-gallery.md) images come from the working app. Repeat runs are not counted as additional coverage. CI/deployment results are separate remote evidence; the table records local verification.
 
+The [public Pages demo](https://mchenry-power-dev.github.io/orbit-agentic-commerce/) also passed the sample, targeted revision, ten-asset approval, landing preview, ZIP download, and refresh journey at both recorded viewports. Its 13 ZIP entries matched the approved manifest versions. Built JavaScript/CSS loaded successfully; no page/console errors or requests outside the site origin were recorded during the journey.
+
 ## Limits
 
 Selected keyboard/focus and responsive checks do not establish accessibility certification. Browser-local recovery is not a server queue guarantee; closing the browser stops work. Fixture failures do not characterize real vendor reliability. Channel checks cover a Performance Max-oriented subset; SVG drafts and the copy CSV do not establish upload/import readiness. See [channel specifications](channel-specs.md) and [trust boundaries](source-and-asset-notes.md).

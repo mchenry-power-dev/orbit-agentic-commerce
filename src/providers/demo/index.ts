@@ -140,7 +140,10 @@ function image(
       ),
     )
     .join("");
-  const titleFill = index === 3 ? "#fff6e8" : ink;
+  if (index === 3) {
+    decoration += `<rect x="${width * 0.04}" y="${height * 0.1}" width="${width * 0.76}" height="${height * 0.15}" rx="${unit * 0.01}" fill="#f6efe2"/>`;
+  }
+  const titleFill = ink;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeXml(`${spec.treatment}: ${products.map((product) => product.name).join(" and ")}`)}"><rect width="${width}" height="${height}" fill="#f6efe2"/>${decoration}<text x="${textX}" y="${textY}" fill="${titleFill}" font-family="system-ui,sans-serif" font-size="${unit * 0.023}" font-weight="600" letter-spacing="3">${escapeXml(merchant.name.toUpperCase())}</text><text x="${textX}" y="${textY + unit * 0.064}" fill="${titleFill}" font-family="system-ui,sans-serif" font-size="${unit * (index === 1 || index === 4 ? 0.028 : 0.04)}" font-weight="600">${label}</text>${packages}${!preferences.avoidCrowdedCompositions ? `<circle cx="${width * 0.12}" cy="${height * 0.73}" r="${unit * 0.035}" fill="${color}"/><circle cx="${width * 0.89}" cy="${height * 0.89}" r="${unit * 0.06}" fill="${color}" opacity=".4"/>` : ""}<text x="${width * 0.065}" y="${height * 0.96}" fill="${index === 3 ? "#fff6e8" : ink}" font-family="system-ui,sans-serif" font-size="${unit * 0.016}" letter-spacing="1">ORIGINAL VECTOR CONCEPT · FICTIONAL SAMPLE PRODUCTS</text></svg>`;
   return {
     type: "image",

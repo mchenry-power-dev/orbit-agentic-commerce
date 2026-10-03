@@ -7,7 +7,7 @@ McHenry Power · Product Architect & Developer<br>
 Current focus: **Orbit Studio — campaign creative orchestration**<br>
 Status: **Runnable public reference · Sample data · Simulated providers**
 
-[Run locally](#run-it) · [Workflow](docs/workflow-and-domain.md) · [Architecture](docs/architecture.md) · [Validation](docs/testing-and-evaluation.md) · [Gallery](docs/product-gallery.md)
+[Try the demo](https://mchenry-power-dev.github.io/orbit-agentic-commerce/) / [Run locally](#run-it) · [Workflow](docs/workflow-and-domain.md) · [Architecture](docs/architecture.md) · [Validation](docs/testing-and-evaluation.md) · [Gallery](docs/product-gallery.md)
 
 TypeScript · React · Vite · IndexedDB · Vitest · Playwright
 
@@ -31,7 +31,7 @@ Square, landscape, and portrait treatments share stable packaging and product fa
 
 ## 🖼️ See it work
 
-[![Orbit Studio's coordinated campaign portfolio with SVG image drafts and review statuses](docs/images/02-portfolio.png)](docs/demo-guide.md)
+[![Orbit Studio's coordinated campaign portfolio with SVG image drafts and review statuses](docs/images/02-portfolio.png)](https://mchenry-power-dev.github.io/orbit-agentic-commerce/)
 
 *Working reference demo · Sample data · Simulated providers*
 
@@ -62,21 +62,21 @@ The React-independent core exposes typed brief revisions, provenance, asset vers
 
 | Challenge | Implemented approach | Inspect |
 | --- | --- | --- |
-| Context provenance | Snapshot fixtures with inclusion reasons | [Context/planner](src/fixtures/index.ts) |
+| Context provenance | Snapshots with provenance | [Context/planner](src/fixtures/index.ts) |
 | Provider boundaries | Deterministic context-aware adapters | [Provider contract](src/orchestration/index.ts) |
-| Recoverable state | Persist events; bound retries; guard duplicate starts | [Engine](src/orchestration/index.ts), [persistence](src/persistence/index.ts) |
-| Targeted revision | Append a version for one specification | [Behavior tests](tests/core.test.ts) |
-| Approval/export safety | Validate current versions and manifest references | [ZIP/export gates](src/export/index.ts) |
+| Recoverable state | Persistence, bounded retries, start guard | [Engine](src/orchestration/index.ts), [persistence](src/persistence/index.ts) |
+| Targeted revision | Append one asset version | [Behavior tests](tests/core.test.ts) |
+| Approval/export safety | Check versions and manifest | [ZIP/export gates](src/export/index.ts) |
 
 ```mermaid
-flowchart LR
-  UI[React workspace] --> Core[Typed orchestration core]
-  Fixtures[Bundled merchant context] --> Core
-  Core --> Demo[Simulated text / SVG providers]
-  Core <--> State[Browser-local IndexedDB]
-  Demo --> Checks[Deterministic validation]
-  Checks --> Review[Version-specific merchant review]
-  Review --> Export[Approved drafts + ZIP manifest]
+flowchart TD
+  UI[React<br/>workspace] --> Core[Typed<br/>orchestration core]
+  Fixtures[Bundled<br/>merchant context] --> Core
+  Core --> Demo[Simulated<br/>text / SVG providers]
+  Core <--> State[Browser-local<br/>IndexedDB]
+  Demo --> Checks[Deterministic<br/>validation]
+  Checks --> Review[Version-specific<br/>merchant review]
+  Review --> Export[Approved drafts<br/>ZIP manifest]
 ```
 
 **Small interfaces, explicit limits.** Free-text direction remains visible in the blueprint; deterministic providers support a defined vocabulary rather than interpreting arbitrary instructions. Saved composition preferences influence supported planning choices. That is preference reuse, not model training or demonstrated performance optimization.
