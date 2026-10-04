@@ -2,7 +2,7 @@ name: Verify and deploy reference
 
 on:
   push:
-    branches: [main]
+    branches: [main, "v2/**"]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -29,6 +29,8 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run check
+        env:
+          ORBIT_E2E_BUILT: "1"
       - name: Package only the built static demo
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0

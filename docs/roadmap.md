@@ -1,19 +1,19 @@
-# Direction and production boundaries
+# Direction and release boundaries
 
-Orbit Studio is the first module of Orbit™ — Agentic Commerce OS. The product direction is to coordinate the work between commerce, creative, advertising, and storefront systems. This repository demonstrates a campaign portfolio workflow with a real local engine and simulated store/generation providers.
+Orbit Studio is the first module of Orbit™ — Agentic Commerce OS. It coordinates campaign creative, pages, placement choices, budget assumptions and review. The V2 candidate has a useful key-free sample/local workflow and protected service contracts, with live semantic/image verification still pending owner-approved runtime and generation costs.
 
-| Present boundary | Next production step | Evidence required before claiming it works |
-| --- | --- | --- |
-| Bundled fictional merchants | Authorized Shopify context adapter | Scoped access, provenance, factual reconciliation, revoked-access handling |
-| Deterministic text and SVG providers | Real text/image/video adapters | Contract tests, cancellation, content controls, cost limits, provider failures |
-| Browser-local IndexedDB | Authenticated merchant backend and job execution | Tenant isolation, access control, migrations, operational recovery |
-| Human review and ZIP export | Explicitly approved storefront/ad publishing | Preview/diff, exact-version authorization, idempotent writes, audit history |
-| Preference reuse | Measured feedback loop | Consented observations, defined evaluation, evidence against baselines |
+| Present capability                                              | Remaining work                                          | Evidence required                                                                                             |
+| --------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Authorized Cosmic Cat facts/photos and confirmed visitor inputs | Broader authorized catalog/context access               | Provenance, bounded retrieval, factual reconciliation and revoked-access handling                             |
+| Two local creative families and real raster variants            | Approved live semantic planning/image service           | Real contrasting/paraphrased briefs, accurate protected products, cost ceiling, cancellation and failures     |
+| Protected local importer and schema/provider contracts          | Approved public runtime                                 | Authenticated session, permitted origins, access limits, secrets isolation and real browser import/generation |
+| Browser-local state with V1 preservation                        | Durable authenticated merchant jobs and synchronization | Tenant isolation, migration, backups and operational recovery                                                 |
+| Exact merchant review and destination ZIP mappings              | Storefront/ad-account connections and publishing        | Preview/diff, exact-version authorization, scoped writes and audit history                                    |
+| Video concepts and explicit missing checks                      | Finished video/audio production                         | Actual media encoding, duration/bitrate/safe zones, rights and policy review                                  |
+| Review → revise → review                                        | Measured creative/page/budget feedback                  | Consented observations, defined experiments and evidence against baselines                                    |
 
-These are future directions, not delivered integrations. No account connection, paid API, customer deployment, rendered video, or automatic campaign publishing is required to run this reference.
+Cosmic Cat Coffee Co. is the authorized customer-zero brand, not proof of an Orbit production deployment. Loom™ addresses subscription-commerce infrastructure; Orbit explores reusable orchestration. No second real preset is implied by custom-brand support. Aster/Harbor are preserved fictional regression data.
 
-Cosmic Cat Coffee Co. is McHenry Power's operating business and intended customer-zero environment. It supplies the problem context, not production data or proof of an Orbit deployment. The public demo merchants are invented. Loom™ concerns subscription-commerce infrastructure; Orbit concerns reusable orchestration. FORGE™ is outside this reference.
+No measured turnaround, creative-quality score, conversion lift, revenue, ROI or live advertising performance is reported. Model contracts and mocked responses do not prove semantic effectiveness.
 
-A roughly ten-minute campaign brief is a product-design target. This repository does not report measured turnaround, conversion lift, revenue, ROI, model quality benchmarks, or live advertising performance.
-
-Production work should begin with a single authorized adapter and its failure boundaries. More infrastructure is warranted only when an observed requirement needs it. This static reference intentionally has no microservices, server queue, multi-tenant billing, tracking, credential entry, or production publishing.
+**Full requested V2 verified: NO.** The existing public V1 remains available while the candidate is validated. The consolidated external requirement is an owner-approved protected runtime and provider configuration with an explicit generation-cost ceiling. This reference does not create billing, place keys in frontend configuration, enable anonymous paid inference or substitute a local composition for a live result.

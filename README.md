@@ -1,107 +1,83 @@
 # 🪐 Orbit™
+
 ### Agentic Commerce OS
 
-**Brief a campaign. Coordinate its creative assets. Review and export one coherent portfolio.**
+**One campaign brief. Two creative directions. A coordinated, reviewed set of placement variants.**
 
 McHenry Power · Product Architect & Developer<br>
 Current focus: **Orbit Studio — campaign creative orchestration**<br>
-Status: **Runnable public reference · Sample data · Simulated providers**
+Status: **V2 candidate · Authorized public brand snapshot · Local photo composition**
 
-[Try the demo](https://mchenry-power-dev.github.io/orbit-agentic-commerce/) / [Run locally](#run-it) · [Workflow](docs/workflow-and-domain.md) · [Architecture](docs/architecture.md) · [Validation](docs/testing-and-evaluation.md) · [Gallery](docs/product-gallery.md)
+[Current public V1 demo](https://mchenry-power-dev.github.io/orbit-agentic-commerce/) · [Workflow](docs/workflow-and-domain.md) · [Architecture](docs/architecture.md) · [Checks](docs/testing-and-evaluation.md) · [Brand provenance](docs/brand-provenance.md)
 
 TypeScript · React · Vite · IndexedDB · Vitest · Playwright
 
 ---
 
-## 🧭 The workflow
+## 🧭 Why Orbit Studio
 
-Campaign imagery, copy, video concepts, and landing-page material require substantial manual switching between tools. Orbit Studio explores how a shared brief and explicit review process can coordinate that work across a portfolio.
+McHenry Power's experience operating Cosmic Cat Coffee Co. shapes Orbit's central problem: one campaign requires coordinating product facts, audiences, offers, budgets, imagery, copy, landing pages and approvals. Creative production adds repeated manual rework. An image suited to an ad placement may need different framing, product visibility and text space for a desktop or mobile page. That friction limits campaign frequency and encourages reuse of older creative.
 
-**Brief → context → plan → generate → validate → review → export**
+The workflow begins with a description and selected products, followed by an editable interpretation. Audience, offer, references, directions and actual placement targets stay visible together. Advertising budgets describe currency, period, daily/lifetime intent and channel allocation; they are planning assumptions, separate from generation costs or spending.
 
-| Input | Orchestration | Output |
-| --- | --- | --- |
-| Goal, products, audience, direction | Snapshot context; specify assets | Six coordinated SVG compositions |
-| Offer, tone, keywords, phrases | Execute bounded jobs; validate | Headlines, descriptions, CTAs, storefront drafts |
-| References and preferences | Preserve versions; require review | Landing preview, video brief, blueprint, ZIP |
+**Brief and brand → creative plan → two families → placement variants → review → export**
 
-**A complete vertical slice.** Start with an explicitly populated coffee campaign or a new brief. A fictional household-consumables merchant demonstrates reuse. Inspect included products, brand rules, references, and page content; exclude a reference when appropriate.
+Orbit's thesis is to make this coordination software. The intended feedback loop connects creative, page and budget hypotheses with later measured performance. This reference implements review and revision without connected advertising accounts or performance feeds.
 
-Square, landscape, and portrait treatments share stable packaging and product facts. The landing preview uses the same messages and artwork. The video brief contains a script, shots, and generation instructions, rather than a playable video.
+## 🖼️ Start with a finished campaign
 
-## 🖼️ See it work
+The V2 candidate opens with an authorized Cosmic Cat Christmas example. Solar Surge's verified record and unchanged packaging photo anchor two creative families, adapted for selected Google, Meta and website targets. Website heroes include text; Google image assets keep copy separate.
 
-[![Orbit Studio's coordinated campaign portfolio with SVG image drafts and review statuses](docs/images/02-portfolio.png)](https://mchenry-power-dev.github.io/orbit-agentic-commerce/)
+![Orbit Studio V2 candidate showing the Cosmic Cat finished-campaign preview](docs/images/v2-01-home.png)
 
-*Working reference demo · Sample data · Simulated providers*
+_V2 candidate · Authorized Cosmic Cat photos · Prebuilt local composition · No model calls._
 
-The [gallery](docs/product-gallery.md) shows the working application. Follow the [demo guide](docs/demo-guide.md) to inspect, revise, approve, and export the sample portfolio.
+**Explore a finished campaign** copies the example into local work without carrying over merchant approvals. **Create a campaign** begins a new brief. A contrasting cool summer direction can reuse the same protected product photo while changing the surrounding palette, arrangement and copy. The original photo remains intact; local composition creates a graphic treatment around it.
 
-**Review stays with the merchant.** Inspect each asset's purpose, context, findings, and version. Targeted revision preserves unrelated outputs and removes the changed item's approval. Core brief/context edits make affected outputs stale. Export explains missing, invalid, stale, or unreviewed requirements.
+The [brand provenance](docs/brand-provenance.md) records retrieval dates, original image URLs, hashes and the boundary between product facts and visual inspiration. Aster and Harbor remain preserved regression fixtures and earlier saved campaigns remain available separately. Custom brands use confirmed facts and owned uploads; URL importing reports actual successes and failures when its service is configured.
 
 ---
 
 ## Run it
 
-Use Node.js **22.12 or newer**; the reference is tested with **Node 24.18.0 and npm 11.16.0**. From the repository directory:
+Use Node.js **22.12 or newer**. The recorded workspace toolchain is **Node 24.18.0 and npm 11.16.0**. From the V2 repository checkout:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open the local URL printed by Vite, including `/orbit-agentic-commerce/`. Choose **Try sample campaign**, review the brief and context, then **Create portfolio**. No API keys, account connections, paid services, or runtime external APIs are needed.
+Open Vite's local URL, including `/orbit-agentic-commerce/`. The bundled sample and local photo-composition workflow require no model key or paid provider. Choose a finished example, inspect its creative family, review exact outputs and download the approved packet. The linked public Pages application is the earlier V1 reference until V2 deployment is explicitly verified.
 
-**Local state is deliberate.** IndexedDB retains campaigns, revisions, approvals, preferences, and events across refreshes in one browser/origin. Closing the browser stops work. Resume/restart is local recovery, without cross-device sync. Reset requires confirmation. Installation/browser tooling may need network access; the sample workflow does not.
+IndexedDB retains drafts, campaigns, versions, decisions and events across refreshes. Closing the browser stops work; completed outputs remain checkpoints. Storage is browser/origin-specific. Navigation preserves unfinished work; local deletion requires confirmation.
 
-The [full guide](docs/demo-guide.md) covers validation, recovery, and downloads. Use one active editing tab.
+## 🛠️ Engineering boundaries
 
-## 🛠️ Engineering decisions
+The framework-independent engine separates campaign intent, creative families, placement recipes, raster outputs and exact approvals. A text-only offer change invalidates relevant copy and overlaid artwork while preserving unrelated image approvals. A targeted revision appends one version; changing a family invalidates that family's dependent variants. Bounded failures remain visible and completed outputs survive recovery.
 
-The React-independent core exposes typed brief revisions, provenance, asset versions, findings, approvals, and export references. Provider and persistence interfaces separate simulated generation from real state transitions.
+| Capability                  | V2 boundary                                                               |
+| --------------------------- | ------------------------------------------------------------------------- |
+| Works locally               | Typed orchestration, PNG/JPEG composition, persistence, review and ZIP    |
+| Sample or composed          | Authorized Cosmic Cat snapshot; bounded local theme interpretation        |
+| Requires configured service | Public URL import, semantic planning and live image generation            |
+| Roadmap                     | Account connections, publishing, rendered video and measured optimization |
 
-| Challenge | Implemented approach | Inspect |
-| --- | --- | --- |
-| Context provenance | Snapshots with provenance | [Context/planner](src/fixtures/index.ts) |
-| Provider boundaries | Deterministic context-aware adapters | [Provider contract](src/orchestration/index.ts) |
-| Recoverable state | Persistence, bounded retries, start guard | [Engine](src/orchestration/index.ts), [persistence](src/persistence/index.ts) |
-| Targeted revision | Append one asset version | [Behavior tests](tests/core.test.ts) |
-| Approval/export safety | Check versions and manifest | [ZIP/export gates](src/export/index.ts) |
-
-```mermaid
-flowchart TD
-  UI[React<br/>workspace] --> Core[Typed<br/>orchestration core]
-  Fixtures[Bundled<br/>merchant context] --> Core
-  Core --> Demo[Simulated<br/>text / SVG providers]
-  Core <--> State[Browser-local<br/>IndexedDB]
-  Demo --> Checks[Deterministic<br/>validation]
-  Checks --> Review[Version-specific<br/>merchant review]
-  Review --> Export[Approved drafts<br/>ZIP manifest]
-```
-
-**Small interfaces, explicit limits.** Free-text direction remains visible in the blueprint; deterministic providers support a defined vocabulary rather than interpreting arbitrary instructions. Saved composition preferences influence supported planning choices. That is preference reuse, not model training or demonstrated performance optimization.
+Local interpretation recognizes a bounded set of Christmas/gifting, summer/cool and editorial cues. It records its limits and requires confirmation. Arbitrary free-text semantics require the planning service. Live generation must fail visibly when unavailable; it must never silently return a local composition under a live label. Implemented service contracts and mocked tests do not prove live calls or public hosting.
 
 ---
 
-## Verified behavior
+## Evidence and export
 
-**30 unit tests and 16 Chromium browser checks pass.** They cover validation, context exclusions, recovery, targeted revision, approval invalidation, export gates, and ZIP references. All five evaluation scenarios pass within the unit suite. [Results and limits](docs/testing-and-evaluation.md) include desktop/narrow evidence. The [sample packet](samples/approved-campaign/) comes from the same pipeline with synthetic provenance.
+The [V2 tests](tests/studio.test.ts) cover contrasting briefs, complete phrases, sources, budgets, placements, dependencies, recovery and exact exports. A clean rehearsal passed **40 browser cases** (24 V2, 16 legacy). Subsequent service updates passed **130 unit tests** and build, plus focused production captures. The [testing guide](docs/testing-and-evaluation.md) distinguishes those runs and records a local preview-teardown limitation. The [gallery](docs/product-gallery.md) contains real app captures with prebuilt and newly composed work labeled.
 
-The generated packet includes a version manifest and source references. Open its files alongside the blueprint to inspect how the brief becomes one coordinated deliverable.
+Exports contain current approved versions, real raster files, editable recipes, placement copy mappings and source provenance. CSV and JSON are review artifacts, not verified platform import schemas. Merchant approval applies to an exact version and remains separate from account connection and platform policy approval.
 
-**Real engine, simulated generation.** The state model, orchestration, persistence, validation, review, and ZIP assembly execute in this reference. Store retrieval uses fixtures; text uses rules; images are original SVG compositions. Tests establish implemented behaviors, not semantic creative quality, ad approval, revenue, or conversion gains.
-
-The [channel specification](docs/channel-specs.md) separates Google requirements, recommendations, and Orbit defaults. SVG drafts are not upload-ready PNG/JPG ads; the copy CSV is a review artifact. This Performance Max-oriented subset does not establish complete campaign compliance.
+Google checks use dated first-party specifications for the supported measurements. Meta's official guides were unavailable during verification, so its rules remain **Not checked**. Website and email dimensions are configurable design goals. TikTok and Google video concepts remain scripts and shot lists; they are not playable video. No packet claims complete campaign compliance or automatic advertising approval.
 
 ## 🌱 Direction and ownership
 
-| Implemented here | Simulated here | Next production step |
-| --- | --- | --- |
-| Planning, recoverable runs, review, export | Store context, text, image generation | Authorized store and model adapters |
-| Versioned rules and local preference reuse | Provider delays and failure fixtures | Authenticated execution and measured feedback |
+Cosmic Cat Coffee Co. is the authorized customer-zero brand for this candidate. [Loom™](https://github.com/mchenry-power-dev/loom-public) addresses subscription-commerce infrastructure; Orbit explores reusable orchestration across creative work. McHenry Power owns the product direction and architecture; development used AI assistance. Public source availability adds no open-source license grant, and attribution does not turn public brand photography into unrestricted assets.
 
-Cosmic Cat Coffee Co. is the operating business and intended customer-zero environment, not evidence of an Orbit deployment. Its [public commerce lab](https://github.com/mchenry-power-dev/cosmic-cat-commerce-lab) describes that operating context. [Loom™](https://github.com/mchenry-power-dev/loom-public) addresses subscription-commerce infrastructure; Orbit demonstrates reusable orchestration. A roughly ten-minute brief is a design target, not a measured result.
-
-McHenry Power owns the product direction and architecture; development used AI assistance. This **public reference implementation** makes source inspectable without an open-source license grant. [Source/asset notes](docs/source-and-asset-notes.md) explain provenance, dependencies, and trust boundaries; the [roadmap](docs/roadmap.md) separates future integrations from delivered behavior.
+The [roadmap](docs/roadmap.md) separates delivered behavior from future account integrations and performance feedback. Full requested V2 verification remains **NO** until an owner-approved protected runtime, generation-cost ceiling and real import/planning/image journeys are verified. The existing live reference stays available while that work is completed.
 
 [McHenry Power on LinkedIn](https://www.linkedin.com/in/mchenry-j-power-mba)

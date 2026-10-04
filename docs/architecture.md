@@ -1,63 +1,82 @@
 # Architecture
 
-Orbit Studio is a static React interface over a framework-independent TypeScript campaign engine. The browser owns execution and storage. Bundled fictional context and explicitly simulated providers make the default workflow reproducible without API keys or an external service.
+The V2 candidate separates a browser-local campaign workspace from a protected **local Node service**. The bundled Cosmic Cat example and local photo compositions work without model credentials. Public URL import, semantic planning and live image generation use explicit service contracts; live generation remains unverified until an approved runtime and cost allowance are supplied. The public Pages demo remains V1 while the candidate is reviewed.
 
 ```mermaid
 flowchart TB
-  subgraph Implemented[Implemented reference]
-    UI[React campaign workspace]
-    Domain[Typed brief / context / plan]
-    Engine[Asynchronous orchestration]
-    Validate[Versioned channel + factual checks]
-    Review[Exact-version approval]
-    Export[ZIP + manifest]
-    Store[(IndexedDB adapter)]
-    UI --> Domain --> Engine --> Validate --> Review --> Export
+  subgraph Local[Implemented browser workflow]
+    UI[React workspace]
+    Domain[Brief and confirmed brand sources]
+    Plan[Editable plan with two directions]
+    Engine[Versioned campaign engine]
+    Raster[Protected photos and raster composition]
+    Checks[Measured checks and explicit unknowns]
+    Review[Exact-version merchant approval]
+    Export[PNG or JPEG plus recipes and manifest]
+    Store[(Browser-local IndexedDB)]
+    UI --> Domain --> Plan --> Engine
+    Engine --> Raster --> Checks --> Review --> Export
     Engine <--> Store
     Review <--> Store
   end
-  subgraph Simulated[Simulated boundaries]
-    Fixtures[Bundled fictional merchants]
-    Providers[Deterministic text + original SVG providers]
-    Fixtures --> Domain
-    Engine --> Providers --> Validate
+  Snapshot[Owner-authorized Cosmic Cat snapshot] --> Domain
+  subgraph Service[Protected local service contracts]
+    Import[Bounded public HTTPS import]
+    Schema[Validated semantic planning]
+    Images[Configured image provider]
+    Allowance[Server-side approval and cost reservations]
+    Allowance --> Schema
+    Allowance --> Images
   end
-  Future[Future direction: authorized store / model / publishing adapters]
-  Future -. extension interfaces .-> Engine
+  UI --> Import --> Domain
+  UI --> Schema --> Plan
+  Engine --> Images --> Raster
+  Future[Future: approved public runtime and account integrations]
+  Future -. requires separate verification .-> Service
 ```
 
-## Responsibilities and interfaces
+## Responsibilities
 
-| Responsibility | Contract |
-| --- | --- |
-| [Domain/context](../src/domain/index.ts) | Typed records; selected products are factual constraints; snapshots retain source IDs and reasons |
-| [Planner](../src/fixtures/index.ts) | Converts supported brief/context/preferences into stable asset specifications |
-| [Provider](../src/providers/demo/index.ts) | Receives one specification with context; returns draft content or a classified failure |
-| [Orchestrator](../src/orchestration/index.ts) | Persists steps and events, limits attempts/concurrency, resumes incomplete work |
-| [Persistence](../src/persistence/index.ts) | Loads/saves local state; memory adapter supports isolated tests |
-| [Validation](../src/validation/index.ts) | Returns explicit findings for supported fields, facts, phrases, dimensions, and completeness |
-| [Review/export](../src/export/index.ts) | Approval points to a current valid version; export rechecks gates and assembles references |
+| Boundary                                                                                    | Inspect                                                                                                          |
+| ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Typed brief, brand sources, directions, recipes, versions and decisions                     | [Studio domain](../src/domain/studio.ts)                                                                         |
+| Curated public facts and unchanged source images                                            | [Cosmic Cat snapshot](../src/fixtures/cosmic-cat.ts), [provenance](brand-provenance.md)                          |
+| Bounded local theme interpretation and explicit conflicts                                   | [Local planner](../src/fixtures/studio.ts)                                                                       |
+| Placement adaptation, protected photo frames and real raster encoding                       | [Composition provider](../src/providers/composition/index.ts)                                                    |
+| Serialized state changes, bounded attempts, checkpoint recovery and dependency invalidation | [Studio engine](../src/orchestration/studio.ts)                                                                  |
+| V2 records alongside preserved V1 data                                                      | [Persistence](../src/persistence/studio.ts)                                                                      |
+| Google measurements, missing TikTok motion and unknown Meta rules                           | [Placement checks](../src/validation/placements.ts), [channel scope](channel-specs.md)                           |
+| Current exact approvals, destination mappings and ZIP assembly                              | [Export](../src/export/studio.ts)                                                                                |
+| Bounded import, authenticated local routes, schemas and allowances                          | [Service](../server/service.ts), [security](../server/security.ts), [provider contracts](../server/providers.ts) |
 
-The UI never substitutes a success toast for a failed step. Events describe concise outcomes and references, not fictional reasoning transcripts. The providers' deterministic content varies with supported structured brief fields. Free-text instructions remain visible without a claim that arbitrary requests were understood.
+## Generation modes
 
-## Demo provider vocabulary
+**Prebuilt sample** means completed example outputs copied into local work without merchant approvals. **Local composition** means unchanged product photos framed with graphics and copy. It supports bounded Christmas/gifting, summer/cool and editorial cues; arbitrary semantic instructions require the service. It does not synthesize a new photographed scene or alter the package.
 
-The [demo provider](../src/providers/demo/index.ts) uses selected products and merchant category for factual content and packaging. Seasonal words in direction select seasonal copy; `concise`, `direct`, or `bold` in tone change a copy verb; a goal containing `launch` changes an image label. Keywords and the merchant-provided offer enter supported copy fields. Copy revisions containing `short` or `concise` select a short variant. `Warm`/`warmer` selects inviting language in supported copy, landing, or video fields. `More space`, `spacing`, or `less crowded` shrinks image packages by 20%; image revisions also vary arrangement by version. Composition preference controls decorative density.
+**Live generation** requires a configured semantic/image provider. A missing service is a visible failure, without a silent local substitute. Validated JSON and deterministic measurements establish structural constraints, not creative relevance. Mocked contract tests do not establish live provider quality, real paid-call success or approved public hosting.
 
-Other direction/revision text remains in the blueprint, generation brief, or supporting content for human review. A request such as “use a photograph of a café” does not create a photograph; a “move the cup left” instruction is not a supported geometric command. This explicit boundary makes adapter replacement inspectable without pretending the rule-based demo is a language model.
+Current instructions take priority over default brand tone and remembered preferences. The plan captures spacing preferences so later preference changes affect future plans rather than existing recipes. Required campaign-copy phrases must remain whole in actual ad-copy fields; metadata cannot satisfy them.
 
-## Recovery and concurrency
+## Storage, recovery and exports
 
-Completed asset versions and review state are persisted as the run advances. Refresh recovery resumes incomplete work or permits an explicit restart; it should not duplicate completed versions. Failure in one provider step does not erase approved unrelated assets. Timeout, provider failure, and interruption are distinct outcomes, with bounded retry attempts.
+The engine persists completed versions and concise events as each step finishes. One active run is permitted. Local composition defaults to two attempts and 30 seconds per step. Live-mode steps allow one attempt and 75 seconds by default, avoiding automatic paid retries; the service has its own bounded timeout and reservation gates. Failure does not erase unrelated completed work. Pausing or refreshing permits missing/stale work to resume; this is local recovery, not a distributed queue guarantee.
 
-The engine runs one step at a time and permits one active campaign run. Core defaults are three attempts per step per invocation and a two-second provider timeout; the UI configures two attempts and 1.5 seconds. Explicit resume begins another bounded invocation for remaining work. A duplicate start is rejected. The app's browser-level editing lock prevents competing tabs from writing the same state. This is browser-local coordination, not a distributed exactly-once guarantee.
+IndexedDB stores V2 under `studio-v2` in the original database. New-campaign drafts and existing-campaign drafts are retained separately; deleting a campaign clears its matching draft, and deleting a brand clears its draft uploads. The V1 `app` record is retained, and the earlier interface is reachable with `?legacy=1`. Browser storage remains specific to profile and origin; clearing it loses local work. Memory adapters support isolated tests and preserve a separate legacy record.
 
-Closing the browser stops computation. IndexedDB state is local to that browser and origin; it is not a server queue, authenticated audit store, cross-device synchronization service, or backup. Clearing storage loses local work. The memory adapter deliberately trades durability for repeatable tests.
+Dependency fingerprints connect each asset to its plan, selected products and sources, including family image prompts and scene instructions. Text-free imagery excludes copy fields from its dependencies. An offer edit therefore changes copy, relevant overlaid images and handoff without discarding unrelated text-free image approvals. A changed family image prompt invalidates that family's variants. An edited version never inherits its previous approval. Export rechecks current source gates, supported measurements and exact approval references.
 
-## Export and trust boundaries
+Live-mode scenes are persisted before local composition, with SHA-256 keys covering campaign, family, scene prompt and selected visual references. A local-render failure can resume from its saved scene and exact provider provenance without repeating the provider request. Revised scenes use separate keys and cannot silently replace the base scene for another missing variant. Failed targeted revisions retain their selected IDs and note across refresh/resume. These behaviors are tested with mock scenes; real paid image generation remains unverified.
 
-Exports contain reviewed drafts and a manifest of exact asset versions. Core brief/context changes make the plan and affected approvals stale; a single-item revision invalidates only that item's previous approval. At download, export rechecks currency, stored validation findings, completeness, and exact approval references. It does not trust a historical approved status alone.
+Placement plans provide bounded `product-right` or `product-center` composition and spacing. These values enter actual recipes; descriptive framing/focal/negative-space notes remain review context. Equal-size placements reuse a file only when their overlay and layout choices match. Global copy edits update current placement mappings as well as campaign copy before re-review/export.
 
-The interface renders provider text as data. SVG composition text is escaped and references remain local; export filenames are normalized. The demonstration does not accept arbitrary executable HTML, runtime uploads, credentials, store OAuth, tracking, or production API endpoints. It is not an authenticated production environment.
+ZIP files contain real PNG/JPEG bytes, optional editable recipes, content JSON, field-mapping CSV, provenance, campaign brief and an exact-version manifest. They do not publish, change ad spend, prove a platform import schema or grant advertising policy approval.
 
-SVG drafts, a review CSV, and a video brief demonstrate coordination. Raster production, comprehensive advertising policy checks, platform import schemas, rendered video, and publishing are outside the implemented boundary. See [channel specifications](channel-specs.md), [source/asset notes](source-and-asset-notes.md), and [roadmap](roadmap.md).
+## Service trust boundary
+
+Import uses public HTTPS with bounded pages, assets, bytes, time and redirects. Address resolution, restricted paths and destination robots rules are checked across page redirects; requests are pinned to eligible resolved addresses. Credential-bearing, private, loopback, link-local, metadata and internal destinations are rejected. Structural extraction excludes hidden, form, navigation and recognizable review/customer sections without storefront cookies or script execution. It does not claim browser-computed visibility or universal recognition of identities in arbitrary unmarked text. Paste/upload remains available when a source cannot be imported.
+
+Imported products remain unconfirmed with no assigned photo. Images enter as visual references until the visitor confirms ownership and explicitly associates a product photo. When extracted colors are absent, a visible editable default palette is supplied; it is not represented as a discovered brand fact.
+
+The local service requires operator authorization, restricts frontend origins and bounds concurrency and response sizes. Provider credentials and allowance state belong server-side. Persistent cost reservations survive failed/unknown paid calls and reject repeated operation identifiers; they are operator ceilings, not proof of actual billing. Visitor budgets, sources and uploads must not become public fixture data or repository logs. Public hosting, production authentication and account integrations require separate work and verification.
+
+Using the semantic service transmits selected brief, confirmed facts, references and planning assumptions. Image requests can transmit at most two selected, locally decoded visual references as inspiration; protected product photos remain separate composition layers. Reference input is not proof of provider fidelity or authorized live acceptance. See the [runtime boundary](provider-and-runtime.md) for limits and the missing owner-approved setup.

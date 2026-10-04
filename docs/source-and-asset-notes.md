@@ -1,23 +1,35 @@
 # Source and asset notes
 
-## Provenance and ownership
+## Ownership and provenance
 
-This is newly written public-reference source for Orbit Studio, owned by McHenry Power. It does not import or reconstruct private Orbit, Loom, employer, or business implementation. Product direction and architecture are independent work; development used AI assistance. Public source availability is not an open-source license grant. No repository license has been added without owner authorization.
+This public-reference source is owned by McHenry Power. It does not import or reconstruct private Orbit, Loom, employer or business implementation. Product direction and architecture are independent work; development used AI assistance. Public source availability is not an open-source license grant. No repository license has been added.
 
-The two bundled merchant presets, product identifiers, factual attributes, packaging designs, and `.example` addresses are invented. Coffee is the primary fixture; household consumables demonstrate a second category. No customer/order records, private financial data, supplier terms, reviews, or paid-media results are included.
+V2 uses an explicitly owner-authorized, bounded [Cosmic Cat public snapshot](brand-provenance.md): two products, unchanged public packaging photos, original logo and separately labeled gifting inspiration. Source URLs, retrieval dates, roles and hashes identify the material. Attribution identifies its owner; it does not assert unrestricted reuse. Prices, discounts, stock, reviews, customer identities and private economics are absent.
 
-Demo image providers create original local SVG compositions and generation briefs. They are vector drafts, not model-generated photographs. Packaging text and fixture attributes stay tied to product records. Video output is a script/shot/generation brief, not a rendered video. Screenshots in the gallery are captured from the running application with synthetic data.
+Aster and Harbor remain fictional V1 regression fixtures with `.example` addresses. Their legacy engine, source fixtures and stored records are preserved. Historical V1 captures use synthetic data; the current [candidate gallery](product-gallery.md) identifies authorized Cosmic Cat photos, prebuilt compositions and newly composed local work.
 
-## Dependencies and assets
+The default V2 creative output is a raster composition around protected product photos. It is neither a redrawn package nor proof of a new generated photographic scene. A production video brief is a script/shot list, not rendered video. Live semantic/image generation requires its configured service and independent verification.
 
-Dependencies are installed locally from the normal npm registry and locked by `package-lock.json`. React renders the interface; Vite builds the static app; TypeScript checks the model; the persistence adapter uses native IndexedDB; `fflate` assembles ZIP files. Vitest and Playwright provide unit/browser checks. [Third-party runtime notices](third-party-notices.md) preserve the installed dependency license texts. Development tooling retains its package notices. This repository makes no ownership claim over dependencies.
+## Dependencies
 
-The UI uses system fonts. Orbital decoration and packaging artwork are original simple compositions. No proprietary fonts, third-party brand logos, remote stock photographs, embedded trackers, or paid-media creative have been redistributed. Google documentation is linked for specification provenance; it does not imply endorsement or affiliation.
+The locked packages come from the normal npm registry. React renders the workspace, Vite builds the browser app, TypeScript checks records, native IndexedDB stores local work and fflate assembles ZIPs. The Node importer uses parse5 for nonexecuting HTML extraction and sharp for raster normalization. Vitest, Playwright and sharp support behavioral/media tests.
 
-## Trust boundaries
+[Third-party notices](third-party-notices.md) preserve installed dependency licenses, including parse5/entities, sharp, its support packages and the Windows native package's codec licensing table. Native packages and licenses differ by platform; npm retains those upstream notices. Native binaries are not checked into this repository or bundled into the browser app. This repository does not claim ownership over dependencies.
 
-The demonstration has no login or authenticated production environment. Data stays in IndexedDB for the current browser/origin. Anyone using that browser profile can inspect or alter it; exports are not cryptographic attestations. Reset removes demo state from the local app. Browser storage clearing, another origin, or another device will not preserve it.
+System fonts supply interface text. No proprietary font files, customer media, embedded trackers or private runtime inputs are part of the public sample. Cosmic Cat assets have the separate owner-authorized status documented above. Google/Meta/TikTok links establish specification provenance where readable, without endorsement or affiliation.
 
-Fixture and provider text are data, not executable instructions. Supported text is rendered/escaped; exported filenames are normalized and review CSV cells neutralize formula prefixes. Generated previews must not execute arbitrary provider HTML or scripts. References are restricted to bundled assets. The default pipeline has no external API calls, scraping, credentials, uploads, payment controls, or analytics.
+## Input and service boundaries
 
-The deterministic factual/prohibited-phrase checks cover a finite rule set. They cannot establish the truth of arbitrary marketing language or perform comprehensive legal, advertising-policy, or security review. A merchant still reviews the exact output version. See [channel scope](channel-specs.md) and [tests](testing-and-evaluation.md) for practical limits.
+Bundled samples work without credentials. Sample/local-composition records and owned uploads are stored in the current browser profile/origin. Using the configured import or semantic/image service transmits the selected URLs, brief/context or visual references needed for that operation. Semantic requests include confirmed facts, selected references and planning assumptions; image requests allow at most two decoded visual references. Provider credentials remain server-side. Uploads are bounded, decoded and re-encoded as raster images; arbitrary active SVG and executable HTML are not accepted as photo content. Source associations and factual confirmation must be reviewed before creation.
+
+The optional protected local service imports only bounded eligible public HTTPS pages/assets. It rejects credential-bearing URLs, internal/private destinations and unsafe redirects, revalidates DNS/redirect targets and pins outbound requests. It does not send storefront cookies or execute source scripts. Structural parsing excludes hidden/form/navigation and recognizable review/customer content; it cannot establish browser-computed visibility or identify every person in arbitrary unmarked text. A failed source remains a failure, with paste/upload available; saving a URL is not an import.
+
+Imported product records remain unconfirmed and their photo assignment stays blank. Retrieved images begin as visual references, so a logo or unrelated photo cannot automatically become a product photo. Confirm ownership, factual sources and each product-photo association before creation. Missing extracted colors use an editable Orbit default palette rather than invented brand evidence.
+
+Semantic and image contracts validate response structure, allowed references and media. Credentials stay in server-owned configuration. Operator-approved cost reservations are persisted and repeated paid-operation identifiers fail closed. Advertising budgets remain separate user planning assumptions. Runtime credentials, ledgers, uploads and visitor data must stay out of Git, public fixtures, browser bundles and logs. The current service is local, not an approved public production backend.
+
+## Review and limitations
+
+Provider text is rendered as data. Raster headers/dimensions/bytes are checked, filenames normalized and CSV formula prefixes neutralized. Recipes preserve selected sources and, when present, provider scene provenance; plan provenance remains in the handoff. A scene checkpoint is saved before local rendering, and revision scenes are distinct from base scenes. These contracts and mocked recovery tests do not prove real generative relevance. Browser storage can be inspected or altered by anyone using that profile; exported manifests are not cryptographic attestations. Closing the browser stops execution, and clearing storage loses local work.
+
+Deterministic checks cover explicit measurements and a bounded claim/phrase rule set. They do not establish arbitrary marketing truth, semantic relevance, policy approval or security certification. Merchant review applies to the exact current version. See [placement scope](channel-specs.md), [architecture](architecture.md) and [tests](testing-and-evaluation.md).

@@ -14,12 +14,17 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "check": "npm run typecheck && npm test && npm run build && npm run test:e2e",
-    "sample": "tsx scripts/generate-sample.ts"
+    "sample": "tsx scripts/generate-sample.ts",
+    "sample:studio": "node scripts/generate-studio-sample.mjs",
+    "service": "tsx server/index.ts",
+    "service:import": "tsx server/import-cli.ts"
   },
   "dependencies": {
     "fflate": "^0.8.3",
+    "parse5": "^8.0.1",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",

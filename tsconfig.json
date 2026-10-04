@@ -17,6 +17,7 @@
     "src",
     "tests",
     "scripts",
+    "server",
     "vite.config.ts",
     "playwright.config.ts"
   ]

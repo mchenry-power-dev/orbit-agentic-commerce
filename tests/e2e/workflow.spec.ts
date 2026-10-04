@@ -110,7 +110,7 @@ async function gallery(page: Page, name: string, project: string) {
 }
 
 async function startSample(page: Page, scenario?: string) {
-  await page.goto("./");
+  await page.goto("./?legacy=1");
   await expect(
     page.getByRole("button", { name: "Try sample campaign", exact: true }),
   ).toBeVisible();
@@ -135,7 +135,7 @@ test("sample campaign, targeted revision, exact-version review and real ZIP expo
   page,
 }, testInfo) => {
   await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
-  await page.goto("./");
+  await page.goto("./?legacy=1");
   await expect(
     page.getByText("Demo mode · Sample data · Simulated providers", {
       exact: true,
@@ -435,7 +435,7 @@ test("a second tab cannot acquire the active browser-local workspace", async ({
   await startSample(page);
   await expect(readyReviews(page)).toHaveCount(10);
   const secondTab = await page.context().newPage();
-  await secondTab.goto("./");
+  await secondTab.goto("./?legacy=1");
   await expect(
     secondTab.getByRole("heading", { name: "One workspace at a time" }),
   ).toBeVisible();
@@ -452,7 +452,7 @@ test("a second tab cannot acquire the active browser-local workspace", async ({
 test("the household preset coordinates a single selected product using changed brief fields", async ({
   page,
 }) => {
-  await page.goto("./");
+  await page.goto("./?legacy=1");
   await page.getByRole("button", { name: /Harbor Home Goods/ }).click();
   await page.getByRole("checkbox", { name: /^Kitchen Brush/ }).uncheck();
   await page
