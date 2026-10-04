@@ -1,6 +1,12 @@
 # Demo guide
 
-This guide describes the **V2 candidate**. The [current public Pages demo](https://mchenry-power-dev.github.io/orbit-agentic-commerce/) remains the earlier V1 until a new release is verified. Local sample/composition does not need a paid provider; importing and live generation are separate service capabilities.
+Orbit V2 is a **working no-key creative orchestration reference using real product photography, local composition, review workflows, and export.** Start in the [public Pages demo](https://mchenry-power-dev.github.io/orbit-agentic-commerce/), or run the same browser workflow locally. No backend or paid provider is needed for the hosted release.
+
+| Availability       | What to expect                                                                                                                                                                                                        |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hosted demo        | Completed Cosmic Cat sample, bundled facts/photos, owned PNG/JPEG uploads, new local compositions, placement checks, landing previews, targeted revisions, exact approvals, ZIP exports and browser-local persistence |
+| Local service only | Bounded import of selected public HTTPS pages; no model key required                                                                                                                                                  |
+| Deferred           | Live semantic planning, generative images/video and provider connections; no credential-entry fields in the hosted app                                                                                                |
 
 ## Run locally
 
@@ -16,9 +22,9 @@ Open Vite's URL with `/orbit-agentic-commerce/`. **Explore a finished campaign**
 ## Main journey
 
 1. Start with the finished example or describe a campaign. The Christmas sample uses Solar Surge's unchanged public product photo. Select actual channels/placements and confirm product facts.
-2. Inspect brand sources in the brand library. Product facts/photos differ from page context and visual inspiration. For your brand, paste confirmed facts and upload owned photos, or import through an authorized configured service. A failed import stays visible. Imported products remain unconfirmed with blank photo assignments until you associate an owned product photo; retrieved images start as visual references. An editable default palette fills in when source colors are absent.
+2. Inspect brand sources in the brand library. Product facts/photos differ from page context and visual inspiration. Use the bundled context, or paste confirmed facts and upload owned PNG/JPEG photos. Website import is labeled **Local service required** and disabled on Pages. A saved URL alone is not an imported source. With the local service, a failed import stays visible; imported products remain unconfirmed until you associate their photos and confirm facts.
 3. Inspect the interpretation and two creative directions. Confirm audience, offer, themes, copy, source choices and placements. Required phrases stay complete in ad-copy fields; resolve incompatible requirements before creation.
-4. Choose **Create creative family**. Local mode applies bounded themes to graphics, framing and copy around protected original photos. It does not promise arbitrary semantic interpretation or newly photographed scenes.
+4. Choose **Create creative family**. Supported festive, cool and editorial modes apply graphics and copy around protected original photos. Edit palette, framing, spacing and supported placement copy. Written scene notes remain human review context; arbitrary instructions are not understood by a live model.
 5. Review families and variants. Compare square/landscape/portrait targets and website heroes, inspect recipe/provenance/findings, revise one variant or edit copy. Intentional selected approval applies only to each exact current version.
 6. Inspect the landing preview and approved packet. The export gate explains missing/stale/invalid/unreviewed outputs and rechecks sources. Destination exports carry real rasters, editable recipes, copy mappings, provenance and exact-version manifest references.
 
@@ -30,15 +36,15 @@ Advertising budget is a planning input: currency, period, daily/lifetime intent,
 
 Local work uses IndexedDB for this browser and origin. Completed versions and decisions survive refresh; unfinished work can resume after bounded failure or interruption. Work stops when the browser closes. Review current gate reasons after any brief/family/source change. Developer failure fixtures are for testing and do not describe vendor reliability.
 
-Activity accepts merchant feedback for the next interpretation; no performance metrics are imported. A failed targeted revision retains its original output selection and revision note for resume. In configured live mode, a saved scene can survive local rendering failure, with revised and base scenes kept separate. Those recovery contracts are tested with mocks; they do not establish real provider acceptance.
+Activity accepts merchant feedback for the next interpretation; no performance metrics are imported. A failed targeted revision retains its original output selection and revision note for resume. Local revisions support spacing or centered framing; edit the plan for other supported composition changes. Deferred live-scene recovery contracts remain tested with mocks, separately from the hosted workflow.
 
 Home, campaigns, brand library and campaign sections use application navigation. Inspect the earlier interface with `?legacy=1`; its original `app` record is preserved separately from V2's `studio-v2` record. Confirm destructive local actions and keep unfinished changes visible until saved/applied.
 
 ## Service and verification boundaries
 
-The [protected local service](../server/index.ts) uses server-owned credentials, authenticated sessions, bounded public import and explicit cost reservations. Default generation is disabled. An approved public runtime is not included. Do not put provider keys in browser settings, `VITE_*`, Git, public artifacts or CI logs.
+The static Pages build makes no localhost or service requests, even if a service URL was present at build time. **Live AI · deferred in hosted demo** means no provider is connected; no local composition is presented as a live generative result.
 
-Live mode must report unavailable or rejected services without returning a local substitute. A local import success does not establish public hosting; mocked semantic/image tests do not establish paid-call success or creative relevance. See [release boundaries](roadmap.md) and [trust notes](source-and-asset-notes.md).
+The optional [protected local service](provider-and-runtime.md) is development-only and uses operator-authenticated sessions for bounded public import. Its CLI also imports selected public pages without a model key. Frontend service access requires `npm run dev` on localhost/127.0.0.1 with an explicit `VITE_ORBIT_SERVICE_URL`; production builds ignore that setting. Live provider adapters are preserved for future development, with generation disabled by default. A local import success or mocked provider test does not establish live model acceptance. See [release boundaries](roadmap.md) and [trust notes](source-and-asset-notes.md).
 
 ```sh
 npm run typecheck
@@ -49,4 +55,4 @@ npm run test:e2e
 npm run check
 ```
 
-`check` combines type checking, unit tests, production build and browser acceptance. Browser installation is development tooling. To exercise the built app instead of Vite development mode, set `ORBIT_E2E_BUILT=1` before `npm run test:e2e`. [Recorded evidence](testing-and-evaluation.md) separates the clean 40-case browser rehearsal from the final 130-unit/build verification and documents the local preview-teardown limitation. [Actual screenshots](product-gallery.md) show the candidate workflow. [Channel scope](channel-specs.md) explains unknown Meta rules, configurable website/email goals, and missing actual video; export does not publish or prove complete ad compliance.
+`check` combines type checking, unit tests, production build and browser acceptance. Browser installation is development tooling. To exercise the built app instead of Vite development mode, set `ORBIT_E2E_BUILT=1` before `npm run test:e2e`. [Recorded evidence](testing-and-evaluation.md) distinguishes local, CI and hosted verification. [Actual screenshots](product-gallery.md) show the V2 workflow. [Channel scope](channel-specs.md) explains unknown Meta rules, configurable website/email goals, and missing actual video; export does not publish or prove complete ad compliance.

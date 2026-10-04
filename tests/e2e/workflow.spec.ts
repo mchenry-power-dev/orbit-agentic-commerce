@@ -31,7 +31,7 @@ const section = (page: Page, name: string) =>
 const browserErrors = new WeakMap<Page, string[]>();
 const networkCalls = new WeakMap<Page, string[]>();
 
-test.beforeEach(({ page }) => {
+test.beforeEach(({ page, baseURL }) => {
   const errors: string[] = [];
   const requests: string[] = [];
   browserErrors.set(page, errors);
@@ -44,7 +44,7 @@ test.beforeEach(({ page }) => {
     const url = new URL(request.url());
     if (
       !["data:", "blob:"].includes(url.protocol) &&
-      !["127.0.0.1", "localhost"].includes(url.hostname)
+      url.origin !== new URL(baseURL!).origin
     )
       requests.push(request.url());
   });
@@ -57,7 +57,7 @@ test.afterEach(({ page }) => {
   ).toEqual([]);
   expect(
     networkCalls.get(page),
-    "No external requests during local demo use",
+    "No workflow requests outside the configured demo origin",
   ).toEqual([]);
 });
 

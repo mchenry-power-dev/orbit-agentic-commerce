@@ -1,5 +1,10 @@
 import { defineConfig, devices } from "@playwright/test";
 
+// Run the same browser assertions against an already published static build.
+// An external base URL never launches a development server or local service.
+const externalBaseURL = process.env.ORBIT_E2E_BASE_URL;
+const localBaseURL = "http://127.0.0.1:5173/orbit-agentic-commerce/";
+
 export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 60_000,
@@ -10,7 +15,7 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
-    baseURL: "http://127.0.0.1:5173/orbit-agentic-commerce/",
+    baseURL: externalBaseURL ?? localBaseURL,
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
@@ -32,13 +37,16 @@ export default defineConfig({
       },
     },
   ],
-  webServer: {
-    command:
-      process.env.ORBIT_E2E_BUILT === "1"
-        ? "npm run preview -- --port 5173 --strictPort"
-        : "npm run dev -- --port 5173 --strictPort",
-    url: "http://127.0.0.1:5173/orbit-agentic-commerce/",
-    reuseExistingServer: !process.env.CI && process.env.ORBIT_E2E_BUILT !== "1",
-    timeout: 30_000,
-  },
+  webServer: externalBaseURL
+    ? undefined
+    : {
+        command:
+          process.env.ORBIT_E2E_BUILT === "1"
+            ? "npm run preview -- --port 5173 --strictPort"
+            : "npm run dev -- --port 5173 --strictPort",
+        url: localBaseURL,
+        reuseExistingServer:
+          !process.env.CI && process.env.ORBIT_E2E_BUILT !== "1",
+        timeout: 30_000,
+      },
 });

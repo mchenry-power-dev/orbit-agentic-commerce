@@ -202,11 +202,14 @@ export default function BrandLibrary({
           ))}
         </div>
         <details className="advanced">
-          <summary>Import a public website or reference</summary>
+          <summary>
+            <span>Import a public website or reference</span>
+            {!importEnabled && <small> · Local service required</small>}
+          </summary>
           <p className="helper">
-            The protected service reads public pages and raster images. Imported
-            facts stay unconfirmed until you review them. A saved URL alone is
-            not an imported reference.
+            Website import uses the documented local service to read public
+            pages and raster images. Imported facts stay unconfirmed until you
+            review them. A saved URL alone is not an imported reference.
           </p>
           <label>
             Website, product, collection or reference URLs
@@ -233,8 +236,10 @@ export default function BrandLibrary({
           </button>
           {!importEnabled && (
             <p className="helper">
-              Public import needs an approved, authenticated service. You can
-              paste confirmed product facts and upload your own PNG/JPEG below.
+              <strong>Local service required</strong>. Website import is
+              unavailable in the hosted demo. Use the bundled Cosmic Cat brand
+              context, paste confirmed product facts, or upload your own
+              PNG/JPEG below. Saving a website URL only records the link.
             </p>
           )}
         </details>

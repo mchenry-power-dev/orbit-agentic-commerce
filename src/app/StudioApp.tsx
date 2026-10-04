@@ -46,6 +46,7 @@ import {
 } from "../validation/placements";
 import { BriefForm, channelNames, photoUrl } from "./StudioForms";
 import BrandLibrary from "./BrandLibrary";
+import { localDevelopmentServiceUrl } from "../providers/service-access";
 import "./studio.css";
 
 type Route = {
@@ -77,17 +78,20 @@ const firstRaster = (campaign?: StudioCampaign) =>
   campaign?.assets.map(studioVersion).find((v) => v?.raster)?.raster?.dataUrl;
 const modeText = (mode?: string) =>
   mode === "live-generation"
-    ? "Live semantic planning + generated scenes"
+    ? "Live-generation mode · unavailable in hosted demo"
     : mode === "prebuilt-sample"
       ? "Prebuilt example · photo compositions"
       : "Local photo composition · no model calls";
 
 export default function StudioApp() {
-  const [service] = useState(() =>
-    import.meta.env.VITE_ORBIT_SERVICE_URL
-      ? new StudioServiceClient(import.meta.env.VITE_ORBIT_SERVICE_URL)
-      : undefined,
-  );
+  const [service] = useState(() => {
+    const url = localDevelopmentServiceUrl(
+      import.meta.env.VITE_ORBIT_SERVICE_URL,
+      import.meta.env.DEV,
+      location.hostname,
+    );
+    return url ? new StudioServiceClient(url) : undefined;
+  });
   const [storage] = useState(() => new StudioIndexedDbPersistence());
   const [engine] = useState(
     () =>
@@ -95,7 +99,7 @@ export default function StudioApp() {
         scene: async (campaign, familyId, signal, revisionNote) => {
           if (!service)
             throw new Error(
-              "Configure an approved image service. No local substitute was used.",
+              "Live image generation is unavailable in this no-key release. Use a local composition plan; no result was substituted.",
             );
           const prompt = studioScenePrompt(campaign, familyId, revisionNote);
           const referenceImages = imageReferenceInputs(
@@ -474,7 +478,7 @@ export default function StudioApp() {
           );
         if (!service || !capabilities?.semanticPlanning)
           throw new Error(
-            "Live semantic planning needs approved, authenticated runtime and cost controls. No local result was substituted.",
+            "Live semantic planning is unavailable in this no-key release. Use local photo composition; no result was substituted.",
           );
         next = fromSemanticPlan(
           await service.plan(
@@ -555,7 +559,7 @@ export default function StudioApp() {
     await action(async () => {
       if (!service || !capabilities?.publicImport)
         throw new Error(
-          "No authenticated import service is configured. Paste product facts or upload an owned photo.",
+          "Local service required. Website import is unavailable in the hosted demo. Use bundled brand context, paste confirmed facts, or upload an owned PNG/JPEG.",
         );
       const result = await service.import({ urls });
       const next = importedBrand(result, urls[0]);
@@ -599,7 +603,7 @@ export default function StudioApp() {
       !/space|crowd|center/i.test(revisionNote)
     ) {
       setError(
-        "Local photo revisions support more space or centered framing. Edit the family’s theme/palette in its plan, or use an approved live provider for other instructions.",
+        "Local photo revisions support more space or centered framing. Edit the family’s festive, cool, or editorial theme and palette in its plan. Arbitrary scene generation is unavailable in this no-key release.",
       );
       return;
     }
@@ -1327,12 +1331,13 @@ export default function StudioApp() {
                         ))}
                       </ul>
                       <p>
-                        Local composition uses confirmed mood, palette, framing,
-                        and copy with protected photos. The written scene is a
-                        human review note; it is not a semantic image-generation
-                        request in local mode. Live mode requests two generated
-                        background scenes and reuses them for placement
-                        compositions.
+                        Local composition supports festive, cool, and editorial
+                        directions with confirmed palette, framing, spacing, and
+                        copy around protected photos. The written scene is a
+                        human review note; arbitrary natural-language
+                        instructions are not interpreted by a live model.
+                        Generative images and video are unavailable in the
+                        hosted demo.
                       </p>
                     </details>
                     <div className="preview-copy surface">
@@ -1391,14 +1396,17 @@ export default function StudioApp() {
                           !capabilities?.imageGeneration
                         }
                       >
-                        Live semantic planning & scenes · configured service
-                        required
+                        {service
+                          ? "Live semantic planning & scenes · configured service required"
+                          : "Live AI · deferred in hosted demo"}
                       </option>
                     </select>
                   </label>
                   <p className="helper">
-                    {capabilities?.generationBlocker ||
-                      "No approved paid runtime is configured. Arbitrary semantic planning and generative scenes remain unavailable; local composition is labeled explicitly."}
+                    {service
+                      ? capabilities?.generationBlocker ||
+                        "Live planning and generated scenes require a separately configured, approved provider. No live provider is connected unless the service reports those capabilities."
+                      : "Live semantic planning and generative images/video are deferred in this hosted demo. No provider is connected. Use festive, cool, or editorial compositions with editable palette, framing, spacing, and copy."}
                   </p>
                   <label className="check-line">
                     <input
@@ -2104,8 +2112,9 @@ export default function StudioApp() {
                       />
                     </label>
                     <p className="helper">
-                      Local revisions support spacing or center framing. Other
-                      scene changes need a configured live provider.
+                      Local revisions support spacing or center framing. Edit
+                      the plan for festive, cool, or editorial themes and
+                      palette changes. Arbitrary scene generation is deferred.
                     </p>
                     <button
                       className="button"

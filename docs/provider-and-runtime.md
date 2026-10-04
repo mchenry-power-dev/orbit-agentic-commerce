@@ -1,6 +1,14 @@
 # Provider and runtime boundary
 
-The V2 branch includes a real **protected local service**, a schema-validated OpenAI planning adapter, and an OpenAI image generation/editing adapter. **No paid provider call or public service deployment has been authorized or verified.** The published GitHub Pages frontend cannot hold secrets, import arbitrary sites by itself, or use an IDE/Codex subscription as an application credential. Until the owner approves a provider account, runtime/access arrangement and cost ceiling, live generation stays disabled and the existing published site is preserved.
+The no-key V2 release runs on GitHub Pages without a backend or paid provider. It is a **working no-key creative orchestration reference using real product photography, local composition, review workflows, and export.** The repository preserves a protected local service and schema-validated planning/image adapters for separate development; they are not connected to the hosted demo. **No paid provider call or public service deployment is part of this release.**
+
+| Availability                  | Capability and boundary                                                                                                                                                                                                      |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hosted demo                   | Bundled Cosmic Cat context, owned PNG/JPEG uploads, prebuilt sample, festive/cool/editorial local composition, placement checks, landing previews, revision/recovery, exact approvals, ZIP exports and IndexedDB persistence |
+| Documented local service only | Bounded public-URL import through CLI or authenticated development service; no model key needed                                                                                                                              |
+| Deferred                      | Live semantic planning, generative image/video services, public backend authentication and provider connections                                                                                                              |
+
+On Pages, website import says **Local service required** and its import action is disabled. Bundled context, pasted confirmed facts and supported local uploads remain available. Saving a URL does not count as importing it. **Live AI · deferred in hosted demo** exposes no credential-entry field or connected-provider claim. The static production build makes no localhost or service requests, regardless of any `VITE_ORBIT_SERVICE_URL` build-time value.
 
 The frontend's prebuilt samples and local photograph compositions are separate capability modes. Neither silently substitutes for semantic generation of arbitrary instructions. User briefs, uploads and budgets must stay out of public sample files and source control.
 
@@ -27,7 +35,9 @@ The command supports one to three explicitly selected public HTTPS pages. It per
 
 `npm run service` starts [server/index.ts](../server/index.ts) on **127.0.0.1:4318**. It requires a server-owned `ORBIT_SERVICE_ACCESS_SECRET` of at least 32 characters; provision a random value through the operator's secret mechanism. Never commit, print or place it in a frontend field. The default service supports import/uploads and rejects paid generation. Only explicit localhost/127.0.0.1 frontend origins on port 5173 are allowed. The service also checks its Host header to block local DNS rebinding.
 
-Server-owned session bootstrap uses `POST /v1/session` with authorized operator authentication and sets a random, 30-minute **HttpOnly, SameSite=Strict** cookie. It does not return a provider key or access token in JSON. A browser session provisioning flow is not deployed; enabling a hosted frontend requires an approved identity/HTTPS/abuse-control design. This loopback service is not a production multi-merchant authentication system.
+Frontend service construction is limited to `npm run dev` on `localhost` or `127.0.0.1` with an explicit `VITE_ORBIT_SERVICE_URL=http://127.0.0.1:4318`. Set it in the local development environment, never as a provider-secret field. Production builds ignore the service URL. Use matching loopback hostnames for the frontend and service because the session cookie is SameSite=Strict.
+
+Server-owned session bootstrap uses `POST /v1/session` with authorized operator authentication and sets a random, 30-minute **HttpOnly, SameSite=Strict** cookie. It does not return a provider key or access token in JSON. A browser session provisioning flow is not deployed; future hosted service access would require a separate identity/HTTPS/abuse-control design. This loopback service is not a production multi-merchant authentication system.
 
 | Route                  | Meaning                                                                                                  |
 | ---------------------- | -------------------------------------------------------------------------------------------------------- |
@@ -65,9 +75,9 @@ Raster decoding uses `sharp`, with pixel/byte bounds, and HTML parsing uses `par
 
 Document extraction also refuses more than 50,000 nodes or 64 levels. Image candidates inside review/customer, hidden, form, cart/account, navigation and footer content are excluded before any image request. These structural exclusions do not establish full browser-computed visibility.
 
-## Paid generation stays fail closed
+## Deferred paid generation stays fail closed
 
-The operator must explicitly configure all of these **on the server** before generation can start:
+These preserved adapters are outside the no-key release. A future authorized operator must explicitly configure all of these **on the server** before generation can start:
 
 - `ORBIT_SERVICE_GENERATION_APPROVED=yes` and a recorded `ORBIT_SERVICE_APPROVAL_ID`.
 - `OPENAI_API_KEY`, `ORBIT_PLANNING_MODEL` and `ORBIT_IMAGE_MODEL` for an approved provider account and available models.

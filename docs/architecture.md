@@ -1,10 +1,10 @@
 # Architecture
 
-The V2 candidate separates a browser-local campaign workspace from a protected **local Node service**. The bundled Cosmic Cat example and local photo compositions work without model credentials. Public URL import, semantic planning and live image generation use explicit service contracts; live generation remains unverified until an approved runtime and cost allowance are supplied. The public Pages demo remains V1 while the candidate is reviewed.
+The no-key V2 release runs its campaign workspace entirely in the browser on GitHub Pages. Bundled Cosmic Cat context, owned local uploads, local photo composition, review and export need no backend or model credentials. A protected **local Node service** supports separate development-only public URL import. Semantic/image adapters are preserved but deferred; the hosted release has no connected provider.
 
 ```mermaid
 flowchart TB
-  subgraph Local[Implemented browser workflow]
+  subgraph Local[Hosted no-key browser workflow]
     UI[React workspace]
     Domain[Brief and confirmed brand sources]
     Plan[Editable plan with two directions]
@@ -20,17 +20,17 @@ flowchart TB
     Review <--> Store
   end
   Snapshot[Owner-authorized Cosmic Cat snapshot] --> Domain
-  subgraph Service[Protected local service contracts]
+  subgraph Service[Separate local development service]
     Import[Bounded public HTTPS import]
-    Schema[Validated semantic planning]
-    Images[Configured image provider]
+    Schema[Deferred semantic planning adapter]
+    Images[Deferred image provider adapter]
     Allowance[Server-side approval and cost reservations]
     Allowance --> Schema
     Allowance --> Images
   end
-  UI --> Import --> Domain
-  UI --> Schema --> Plan
-  Engine --> Images --> Raster
+  Import -. confirmed development imports .-> Domain
+  Schema -. future live mode .-> Plan
+  Images -. future live mode .-> Raster
   Future[Future: approved public runtime and account integrations]
   Future -. requires separate verification .-> Service
 ```
@@ -51,9 +51,9 @@ flowchart TB
 
 ## Generation modes
 
-**Prebuilt sample** means completed example outputs copied into local work without merchant approvals. **Local composition** means unchanged product photos framed with graphics and copy. It supports bounded Christmas/gifting, summer/cool and editorial cues; arbitrary semantic instructions require the service. It does not synthesize a new photographed scene or alter the package.
+**Prebuilt sample** means completed example outputs copied into local work without merchant approvals. **Local composition** means unchanged product photos framed with graphics and copy. It supports festive, cool and editorial cues, with editable palette, framing, spacing and supported placement copy. Arbitrary written scene instructions remain human review context; no live model interprets them in the hosted release. Composition does not synthesize a new photographed scene or alter the package.
 
-**Live generation** requires a configured semantic/image provider. A missing service is a visible failure, without a silent local substitute. Validated JSON and deterministic measurements establish structural constraints, not creative relevance. Mocked contract tests do not establish live provider quality, real paid-call success or approved public hosting.
+**Live generation** is deferred in the hosted release. Static production builds never construct a service client, even with a `VITE_ORBIT_SERVICE_URL` value; no localhost or remote service requests occur. Website import is labeled **Local service required**. The optional development service is enabled only through an explicit URL while Vite runs in development on localhost/127.0.0.1. A missing/rejected development service fails visibly, without a silent local substitute. Mocked contract tests do not establish live provider quality, paid-call success or public service hosting.
 
 Current instructions take priority over default brand tone and remembered preferences. The plan captures spacing preferences so later preference changes affect future plans rather than existing recipes. Required campaign-copy phrases must remain whole in actual ad-copy fields; metadata cannot satisfy them.
 
@@ -77,6 +77,6 @@ Import uses public HTTPS with bounded pages, assets, bytes, time and redirects. 
 
 Imported products remain unconfirmed with no assigned photo. Images enter as visual references until the visitor confirms ownership and explicitly associates a product photo. When extracted colors are absent, a visible editable default palette is supplied; it is not represented as a discovered brand fact.
 
-The local service requires operator authorization, restricts frontend origins and bounds concurrency and response sizes. Provider credentials and allowance state belong server-side. Persistent cost reservations survive failed/unknown paid calls and reject repeated operation identifiers; they are operator ceilings, not proof of actual billing. Visitor budgets, sources and uploads must not become public fixture data or repository logs. Public hosting, production authentication and account integrations require separate work and verification.
+The local service requires operator authorization, restricts frontend origins and bounds concurrency and response sizes. Provider credentials and allowance state belong server-side. Persistent cost reservations survive failed/unknown paid calls and reject repeated operation identifiers; they are operator ceilings, not proof of actual billing. Visitor budgets, sources and uploads must not become public fixture data or repository logs. Public service hosting, production authentication and account integrations require separate work and verification.
 
-Using the semantic service transmits selected brief, confirmed facts, references and planning assumptions. Image requests can transmit at most two selected, locally decoded visual references as inspiration; protected product photos remain separate composition layers. Reference input is not proof of provider fidelity or authorized live acceptance. See the [runtime boundary](provider-and-runtime.md) for limits and the missing owner-approved setup.
+Using a future configured semantic service would transmit selected brief, confirmed facts, references and planning assumptions. Image contracts allow at most two selected, locally decoded visual references as inspiration; protected product photos remain separate composition layers. Reference input is not proof of provider fidelity or live acceptance. See the [runtime boundary](provider-and-runtime.md) for hosted, local-only and deferred capabilities.

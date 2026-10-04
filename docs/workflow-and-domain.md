@@ -17,14 +17,14 @@ V2 organizes **campaign → two creative directions → placement variants → e
 
 Goal, products and channels remain near the brief. Optional details include audience, offer, tone, keywords, complete required/prohibited phrases, dates, website/email dimensions and budget. Budget distinguishes currency, period and daily/lifetime intent; allocations use the same basis and must total correctly. Empty amounts remain empty, zero remains zero. Optional CPA/ROAS/margin values are assumptions, not forecasts, private economics or spending authorization.
 
-The local planner supports bounded theme cues and exposes its limits. Keywords can guide those cues; they are not exported paid-search account configuration. Arbitrary instructions require semantic service interpretation. Current instructions take precedence over brand defaults and remembered tone; remembered spacing is captured into a new plan.
+The hosted local planner supports bounded festive, cool and editorial cues and exposes its limits. Keywords can guide those cues; they are not exported paid-search account configuration. Palette, framing, spacing and supported placement copy are editable. Arbitrary scene instructions remain review context; live semantic interpretation is deferred. Current supported instructions take precedence over brand defaults and remembered tone; remembered spacing is captured into a new plan.
 
 Default required-phrase scope is **campaign-copy**: actual headline, long-headline, description or CTA fields. A complete 31–90 weighted-character phrase can use a long field while shorter headline alternatives remain intact. A phrase exceeding Google's 90-character supported long-copy limit conflicts when Google is selected. Use it as a website body note or shorten the requirement; it is not silently moved, split or truncated. Required/prohibited contradictions require resolution.
 
 ## Main journey
 
 1. Explore a finished Cosmic Cat campaign, or describe a new campaign and choose its products and placements.
-2. Inspect brand facts, original photos and page/inspiration roles. Import requires its configured service; a saved URL alone is not a successful import. Confirm actual product facts and photo associations.
+2. Inspect bundled brand facts, original photos and page/inspiration roles, or add confirmed facts and owned PNG/JPEG uploads. Website import is **Local service required** and disabled on Pages; a saved URL alone is not a successful import. Confirm actual product facts and photo associations.
 3. Interpret, inspect and edit the creative plan. Resolve conflicting instructions and confirm the two directions.
 4. Create only selected compatible outputs. The engine encodes real rasters, retains recipes, checks measurements and surfaces unknown rules.
 5. Review a family or exact variant. Approve selected current versions intentionally, edit copy, reject or revise a targeted output.

@@ -44,7 +44,10 @@ function watch(page: Page, owner = page) {
     const url = new URL(request.url());
     if (
       !["data:", "blob:"].includes(url.protocol) &&
-      url.origin !== origins.get(owner)
+      (url.origin !== origins.get(owner) ||
+        /\/v1\/(capabilities|plan|images|import|upload|reset)\b/.test(
+          url.pathname,
+        ))
     )
       requests.get(owner)!.push(request.url());
   });
@@ -62,7 +65,7 @@ test.afterEach(({ page }) => {
   ).toEqual([]);
   expect(
     requests.get(page),
-    "No workflow requests outside this origin",
+    "No off-origin requests or service calls in the no-key demo",
   ).toEqual([]);
 });
 
@@ -247,8 +250,11 @@ async function capture(
   fullPage = true,
 ) {
   if (process.env.ORBIT_CAPTURE_STUDIO_GALLERY !== "1") return;
-  const directory =
-    project === "desktop" ? "docs/images" : "../_work/v2-narrow";
+  const directory = process.env.ORBIT_STUDIO_CAPTURE_DIRECTORY
+    ? resolve(process.env.ORBIT_STUDIO_CAPTURE_DIRECTORY, project)
+    : project === "desktop"
+      ? "docs/images"
+      : "../_work/v2-narrow";
   await mkdir(directory, { recursive: true });
   await expect(page.locator(".studio-toast")).toBeHidden({ timeout: 5_000 });
   await page.evaluate(() =>
@@ -393,6 +399,8 @@ test("finished example, intentional selected approvals, targeted revision, exact
       .getByRole("img", { name: "Intended mobile website hero", exact: true })
       .evaluate((img: HTMLImageElement) => img.naturalWidth),
   ).toBe(900);
+  if (info.project.name === "narrow")
+    await capture(page, "v2-09-narrow-landing", info.project.name);
 });
 
 test("new Christmas and summer families change real artwork while preserving the same product", async ({
@@ -719,6 +727,9 @@ test("owned brand facts and raster upload work while public import stays honestl
   await expect(
     page.getByRole("button", { name: "Import public pages", exact: true }),
   ).toBeDisabled();
+  await expect(
+    page.getByText("Local service required", { exact: true }),
+  ).toBeVisible();
   await expect(page.locator(".brand-workspace")).toContainText(
     "A saved URL alone is not an imported reference.",
   );
@@ -823,6 +834,83 @@ test("owned brand facts and raster upload work while public import stays honestl
   expect(removed.products[0].photo).toBe("");
   expect(removed.products[0].confirmed).toBe(false);
   expect(removed.sources.some((source) => source.image)).toBe(false);
+});
+
+test("no-key demo explains unavailable services and keeps supported composition controls usable", async ({
+  page,
+}) => {
+  await start(
+    page,
+    "No-key capability boundary",
+    "Editorial coffee photography with a quiet frame and room for copy.",
+    true,
+  );
+  await page
+    .getByText("Capability mode & developer tools", { exact: true })
+    .click();
+  const capability = page.getByRole("combobox", {
+    name: "Creation capability",
+    exact: true,
+  });
+  await expect(capability).toHaveValue("local-composition");
+  // toBeDisabled follows the enclosing label to its enabled select in
+  // Playwright. Inspect the native option and also attempt keyboard selection.
+  await expect(
+    capability.locator('option[value="live-generation"]'),
+  ).toHaveJSProperty("disabled", true);
+  await expect(capability).toBeEnabled();
+  await capability.focus();
+  await capability.press("ArrowDown");
+  await capability.press("End");
+  await expect(capability).toHaveValue("local-composition");
+  await capability.press("Escape");
+  await expect(
+    capability.locator('option[value="live-generation"]'),
+  ).toHaveText("Live AI · deferred in hosted demo");
+  await expect(page.locator(".service-settings")).toContainText(
+    "No provider is connected.",
+  );
+  await expect(page.locator(".service-settings")).toContainText(
+    "festive, cool, or editorial compositions",
+  );
+  await expect(page.locator('input[type="password"]')).toHaveCount(0);
+  await expect(
+    page.getByRole("textbox", {
+      name: /api key|credential|access token|service url/i,
+    }),
+  ).toHaveCount(0);
+  await plan(page);
+  const visualMode = page
+    .getByRole("combobox", {
+      name: "Visual mode",
+      exact: true,
+    })
+    .first();
+  await expect(visualMode.locator("option")).toHaveText([
+    "Festive lights composition",
+    "Cool, minimal composition",
+    "Editorial composition",
+  ]);
+  await visualMode.selectOption("editorial");
+  await page
+    .getByRole("combobox", {
+      name: "Product framing",
+      exact: true,
+    })
+    .first()
+    .selectOption("product-center");
+  const created = await create(page, 7);
+  expect(created.mode).toBe("local-composition");
+  const first = version(
+    created.assets.find((asset) => asset.kind === "image")!,
+  );
+  expect(first.recipe).toMatchObject({
+    mood: "editorial",
+    composition: "product-center",
+  });
+  await expect(page.locator(".capability-mode")).toContainText(
+    "Local photo composition · no model calls",
+  );
 });
 
 test("a failed step retains unrelated approvals and resumes only the missing output", async ({

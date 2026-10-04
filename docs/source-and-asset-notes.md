@@ -6,9 +6,9 @@ This public-reference source is owned by McHenry Power. It does not import or re
 
 V2 uses an explicitly owner-authorized, bounded [Cosmic Cat public snapshot](brand-provenance.md): two products, unchanged public packaging photos, original logo and separately labeled gifting inspiration. Source URLs, retrieval dates, roles and hashes identify the material. Attribution identifies its owner; it does not assert unrestricted reuse. Prices, discounts, stock, reviews, customer identities and private economics are absent.
 
-Aster and Harbor remain fictional V1 regression fixtures with `.example` addresses. Their legacy engine, source fixtures and stored records are preserved. Historical V1 captures use synthetic data; the current [candidate gallery](product-gallery.md) identifies authorized Cosmic Cat photos, prebuilt compositions and newly composed local work.
+Aster and Harbor remain fictional V1 regression fixtures with `.example` addresses. Their legacy engine, source fixtures and stored records are preserved. Historical V1 captures use synthetic data; the current [V2 gallery](product-gallery.md) identifies authorized Cosmic Cat photos, prebuilt compositions and newly composed local work.
 
-The default V2 creative output is a raster composition around protected product photos. It is neither a redrawn package nor proof of a new generated photographic scene. A production video brief is a script/shot list, not rendered video. Live semantic/image generation requires its configured service and independent verification.
+The hosted V2 creative output is a raster composition around protected product photos. It is neither a redrawn package nor proof of a new generated photographic scene. A production video brief is a script/shot list, not rendered video. Live semantic/image generation is deferred; its preserved adapters require separate configuration and independent verification.
 
 ## Dependencies
 
@@ -20,7 +20,9 @@ System fonts supply interface text. No proprietary font files, customer media, e
 
 ## Input and service boundaries
 
-Bundled samples work without credentials. Sample/local-composition records and owned uploads are stored in the current browser profile/origin. Using the configured import or semantic/image service transmits the selected URLs, brief/context or visual references needed for that operation. Semantic requests include confirmed facts, selected references and planning assumptions; image requests allow at most two decoded visual references. Provider credentials remain server-side. Uploads are bounded, decoded and re-encoded as raster images; arbitrary active SVG and executable HTML are not accepted as photo content. Source associations and factual confirmation must be reviewed before creation.
+The hosted no-key demo stores sample/local-composition records and owned uploads in the current browser profile/origin. It makes no localhost or provider-service requests. Website import is **Local service required**, with bundled context, pasted confirmed facts and owned PNG/JPEG uploads available publicly. Uploads are bounded, decoded and re-encoded as raster images; arbitrary active SVG and executable HTML are not accepted as photo content. Source associations and factual confirmation must be reviewed before creation.
+
+Separately enabling the documented local development service transmits selected URLs for import. Deferred semantic/image contracts transmit only the selected brief/context or visual references needed for their operation: confirmed facts, selected references and planning assumptions for planning, and at most two decoded visual references for images. Provider credentials remain server-side; the static hosted demo has no credential-entry field.
 
 The optional protected local service imports only bounded eligible public HTTPS pages/assets. It rejects credential-bearing URLs, internal/private destinations and unsafe redirects, revalidates DNS/redirect targets and pins outbound requests. It does not send storefront cookies or execute source scripts. Structural parsing excludes hidden/form/navigation and recognizable review/customer content; it cannot establish browser-computed visibility or identify every person in arbitrary unmarked text. A failed source remains a failure, with paste/upload available; saving a URL is not an import.
 

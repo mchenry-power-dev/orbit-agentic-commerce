@@ -1,6 +1,6 @@
 # Direction and release boundaries
 
-Orbit Studio is the first module of Orbit™ — Agentic Commerce OS. It coordinates campaign creative, pages, placement choices, budget assumptions and review. The V2 candidate has a useful key-free sample/local workflow and protected service contracts, with live semantic/image verification still pending owner-approved runtime and generation costs.
+Orbit Studio is the first module of Orbit™ — Agentic Commerce OS. It coordinates campaign creative, pages, placement choices, budget assumptions and review. The V2 release is a working no-key creative orchestration reference using real product photography, local composition, review workflows, and export. The owner selected the existing GitHub Pages deployment without a backend or paid provider; live integrations are separate future work.
 
 | Present capability                                              | Remaining work                                          | Evidence required                                                                                             |
 | --------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
@@ -16,4 +16,6 @@ Cosmic Cat Coffee Co. is the authorized customer-zero brand, not proof of an Orb
 
 No measured turnaround, creative-quality score, conversion lift, revenue, ROI or live advertising performance is reported. Model contracts and mocked responses do not prove semantic effectiveness.
 
-**Full requested V2 verified: NO.** The existing public V1 remains available while the candidate is validated. The consolidated external requirement is an owner-approved protected runtime and provider configuration with an explicit generation-cost ceiling. This reference does not create billing, place keys in frontend configuration, enable anonymous paid inference or substitute a local composition for a live result.
+The hosted scope includes bundled brand context, owned local uploads, supported festive/cool/editorial composition controls, placement-aware raster outputs, responsive landing previews, targeted revision/recovery, exact-version approvals and destination ZIPs. Website import is **Local service required**; the Pages app makes no localhost requests. Live semantic planning and generative image/video services are deferred, with their adapter code and tests preserved. See the [capability boundary](provider-and-runtime.md) and [recorded release evidence](testing-and-evaluation.md).
+
+Paid-provider approval is not a condition of this no-key release. A future live integration would need its own authorized runtime, access design, provider account and generation-cost ceiling. This release neither creates billing nor substitutes local composition for a live result.
