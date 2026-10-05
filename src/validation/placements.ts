@@ -643,6 +643,12 @@ export function validateStudioBrief(
       );
   if (!brief.productIds.length)
     error("brief-products", "Select at least one product.", "productIds");
+  if (brief.productIds.length > 4)
+    error(
+      "brief-products",
+      "A campaign supports up to four products. Remove a selection before composing.",
+      "productIds",
+    );
   if (new Set(brief.productIds).size !== brief.productIds.length)
     error("brief-products", "Select each product once.", "productIds");
   for (const id of brief.productIds) {

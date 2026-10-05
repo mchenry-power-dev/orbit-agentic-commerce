@@ -1,6 +1,6 @@
 # Cosmic Cat brand snapshot
 
-Orbit's V2 reference uses a small, owner-authorized snapshot of [Cosmic Cat Coffee Co.'s public storefront](https://cosmiccatcoffeeco.com/), retrieved on **2026-10-03**. It contains two products, four unchanged PNG assets, and a short collection-context record. The [typed snapshot](../src/fixtures/cosmic-cat.ts) records source URLs, content roles, dimensions, byte lengths and SHA-256 hashes. The [Studio adapter](../src/fixtures/studio.ts) keeps it separate from the preserved fictional Aster and Harbor fixtures.
+Orbit's V2 reference uses a small, owner-authorized snapshot of [Cosmic Cat Coffee Co.'s public storefront](https://cosmiccatcoffeeco.com/). The original **2026-10-03** snapshot contains two products, four unchanged PNG assets, and a short collection-context record. Its [typed snapshot](../src/fixtures/cosmic-cat.ts) remains intact for earlier campaigns and records source URLs, roles, dimensions, byte lengths and SHA-256 hashes. The **2026-10-05** [catalog](catalog.md) extends the curated set to four products with two further original photographs, real public variants and dated USD prices. This remains separate from the preserved fictional Aster and Harbor fixtures.
 
 ## Facts and limits
 
@@ -10,7 +10,7 @@ Individual product-page requests during snapshot curation encountered a connecti
 
 A later, separate protected local importer successfully retrieved Solar Surge's product page: one source document, six decoded PNG references and one rejected unsupported/non-HTTPS image reference. That operation is recorded in the [testing guide](testing-and-evaluation.md); its unconfirmed metadata and local-only results do not silently replace the curated snapshot or establish a public import service.
 
-Prices, offers, discounts, stock, ratings, review identities, health claims, certifications, delivery promises and private economics are deliberately absent. No account, cart, checkout or tracking records are part of the snapshot. This is a bounded reference, not a full catalog download or a live inventory feed. A visitor's later import is a separate operation and must report its own actual result.
+The original two-product fixture omits prices. The current catalog records dated public USD prices and variants from four anonymous public product requests on **2026-10-05**, with exact scope in [catalog provenance](catalog.md). Offers, discounts, stock, ratings, review identities, health claims, certifications, delivery promises and private economics are deliberately absent. No account, cart, checkout or tracking records are part of the snapshot. This is a bounded reference, not a full catalog download or a live inventory feed. A visitor's later public read or import is a separate operation and must report its own actual result.
 
 ## Original assets
 
@@ -25,7 +25,18 @@ All four requests returned HTTP 200 with `image/png`; PNG signatures, dimensions
 
 The gift image shows different products and a birthday tag. It is excluded from the default campaign context and is not evidence of a Christmas bundle or the contents of either selected product. Asset-version query parameters in these source URLs identify the storefront's public image versions; no visitor tracking parameters are retained.
 
-Preserve each product photo's complete frame and package identity when composing a campaign. Do not change label wording, sizes, proportions or product contents. The original Candy Cane scene includes festive lights; a no-holiday brief using that photo requires an alternative approved reference rather than removing those motifs from the protected image. The Christmas sample selects Solar Surge so the same verified product can support a contrasting summer composition.
+Preserve each product photo's complete frame and package identity when composing a campaign. Do not change label wording, sizes, proportions or product contents. The original Candy Cane scene includes festive lights; a no-holiday brief using that photo requires an alternative approved reference rather than removing those motifs from the protected image. The upgraded Christmas sample demonstrates Candy Cane in the scene-led family and Solar Surge in the editorial family. Solar Surge can also support a contrasting summer composition.
+
+## Catalog additions · 2026-10-05
+
+Only two additional original product scenes were included. Both are 1200×1200 PNGs copied unchanged from public product image references and inspected at full size. Dark Knight depicts **12oz Standard / ground**; Breakfast Blend depicts **12oz Whole Bean**. Variant identities are mapped explicitly; another size or grind is never represented by silently reusing these packages.
+
+| Asset                                                                 | Public source                                                                                                                           | SHA-256                                                            |
+| --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| [dark-knight.png](../public/brand/cosmic-cat/dark-knight.png)         | [Original PNG](https://cosmiccatcoffeeco.com/cdn/shop/files/Dark_Knight_-_Ground_-_12oz.png?v=1730069644)                               | `63ac7a875a42c57e4b231fe668e229f8721f3fb4dd5a56d4639e843c249f6ed5` |
+| [breakfast-blend.png](../public/brand/cosmic-cat/breakfast-blend.png) | [Original PNG](https://cosmiccatcoffeeco.com/cdn/shop/files/Breakfast-Whole-12oz_da39e1c0-cb4e-4ae7-945d-6c2b8b7a45af.png?v=1725921026) | `7e2c64ba88f5a7e43f49a2f8988f84112cc07144a9cf3e72029a37d38104aa21` |
+
+Four `*-thumb.jpg` files are 320×320 resized JPEG previews derived from the corresponding originals using sharp at quality 82. They alter resolution/compression only and are used in the catalog; full originals feed compositions. Original rights and attribution apply equally to these derivatives. Product-detail reference graphics were inspected but not added: Candy Cane's detail graphic had a conflicting “Caramel Cream” heading. The logo and gifting inspiration remain in their own classifications.
 
 ## Attribution, permission and interpretation
 

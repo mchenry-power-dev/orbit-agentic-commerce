@@ -79,14 +79,19 @@ export function freshBrief(brand: StudioBrand = cosmicBrand()): StudioBrief {
 export function christmasSampleBrief(
   brand: StudioBrand = cosmicBrand(),
 ): StudioBrief {
+  const solar = brand.products.find(
+    (product) =>
+      product.id === "cosmic-solar-surge" ||
+      product.catalog?.productId === "solar-surge",
+  );
   return {
     ...freshBrief(brand),
     title: "Coffee, wrapped in Christmas warmth",
     description:
       "Create a vibrant Christmas coffee gifting campaign with festive lights and warm photography. Preserve the original Cosmic Cat packaging. Show two coordinated creative directions and adapt each for Google Performance Max, Meta feed and website heroes.",
-    productIds: brand.products
-      .filter((p) => p.id === "cosmic-solar-surge")
-      .map((p) => p.id),
+    productIds: solar
+      ? [solar.id]
+      : brand.products.slice(0, 1).map((product) => product.id),
     audience: "Coffee lovers choosing Christmas gifts",
     tone: "Warm, vibrant and festive",
     keywords: ["Christmas", "coffee gifting", "festive lights"],
@@ -140,7 +145,12 @@ export function interpretLocalBrief(
     conflicts.push(
       "The brief both requests and excludes holiday imagery. Confirm which instruction applies.",
     );
-  if (excludesHoliday && products.some((p) => p.id === "cosmic-candy-cane"))
+  if (
+    excludesHoliday &&
+    products.some((p) =>
+      p.photo.split("?")[0].endsWith("/brand/cosmic-cat/candy-cane.png"),
+    )
+  )
     conflicts.push(
       "Candy Cane's protected original photo contains festive lights. Supply an approved alternative photo to satisfy a no-holiday instruction.",
     );
@@ -170,10 +180,10 @@ export function interpretLocalBrief(
         ]
       : [];
   const palette = festive
-    ? ["#421218", "#f4bf54", "#116348", "#fff2d5"]
+    ? ["#361b20", "#d3ad81", "#b88b69", "#f8f1e6"]
     : cool
-      ? ["#e5f4f7", "#164451", "#ffffff", "#60b7cb"]
-      : [...brand.palette];
+      ? ["#e6f0ee", "#17463e", "#c9e1d5", "#f7faf5"]
+      : ["#153c32", "#17483c", "#c8ddce", "#f5f1e8"];
   const title = festive
     ? "Coffee for Christmas"
     : cool
@@ -282,23 +292,24 @@ export function interpretLocalBrief(
         products.some((p) => p.sourceIds.includes(s.id))),
   );
   const limitations =
-    "Local photo composition applies only bounded Christmas/gifting, summer/cool, and editorial cues. It preserves selected original photos, changes framing, palette and copy, and does not create a new photographed scene. Arbitrary free-text semantics require a configured planning service; review and edit this interpretation.";
+    "Bounded local photo composition supports Christmas/gifting, summer/cool, and editorial cues. Choose a photographic story or an editorial layout, approved photos, framing, palette and copy. Original package photography stays intact; scene-led backgrounds extend soft-focus material from the same source photograph. It does not create new photographed scenes. Arbitrary free-text semantics require a configured planning service, unavailable in the hosted demo. Review and edit this interpretation.";
   const directions: StudioPlan["directions"] = [
     {
       id: "direction-1",
       name: festive
-        ? "Lights & gifting"
+        ? "Warm photographic story"
         : cool
-          ? "Cool morning"
-          : "Editorial spotlight",
+          ? "Bright daily ritual"
+          : "Photographic spotlight",
       theme,
       scene: festive
-        ? "Warm festive border with small Christmas light accents around the intact product photo."
+        ? "Large intact product photography, warm photographic surroundings and restrained serif typography. Holiday context comes from the selected source photograph, not added ornaments."
         : cool
-          ? "Airy cool-color frame around the intact product photo; no holiday decoration."
-          : "Brand-color editorial frame around the intact product photo.",
+          ? "Large intact product photography and a light, cool copy field with restrained serif typography; no added holiday decoration."
+          : "Large intact product photography, source-derived soft-focus surroundings and restrained serif typography.",
       palette,
       mood,
+      artDirection: "scene-led",
       composition: "product-right",
       headline: title,
       body,
@@ -308,18 +319,19 @@ export function interpretLocalBrief(
     {
       id: "direction-2",
       name: festive
-        ? "Christmas coffee ritual"
+        ? "The gifting edit"
         : cool
-          ? "Summer stillness"
-          : "Centered coffee ritual",
+          ? "The summer edit"
+          : "The coffee journal",
       theme,
       scene: festive
-        ? "Centered original product photo with warm gold light accents and a generous festive frame."
+        ? "A contemporary editorial: large protected photograph, warm paper, confident typography and distinct desktop/mobile reading order."
         : cool
-          ? "Centered original product photo, pale blue framing and restrained graphic accents."
-          : "Centered original product photo with generous surrounding space.",
-      palette: [palette[2], palette[1], palette[0], palette[3]],
+          ? "A bright editorial: large protected photograph, light paper, confident typography and distinct desktop/mobile reading order."
+          : "A contemporary editorial: large protected photograph, paper tones and a clear typographic hierarchy.",
+      palette: [...palette],
       mood,
+      artDirection: "editorial",
       composition: "product-center",
       headline: festive
         ? "Festive Coffee Gifts"
@@ -393,12 +405,29 @@ export function interpretLocalBrief(
     /\bcoffee\b/i.test([p.name, p.description, ...p.facts].join(" ")),
   );
   if (!coffeeProducts) {
-    const generalized = (text: string) =>
-      text
+    const protectedNames = [
+      brand.name,
+      ...products.map((product) => product.name),
+      ...brief.requiredPhrases,
+      offer,
+    ]
+      .filter(Boolean)
+      .sort((a, b) => b.length - a.length);
+    const generalized = (text: string) => {
+      let protectedText = text;
+      protectedNames.forEach((name, i) => {
+        protectedText = protectedText.replaceAll(name, `\u0000ORBIT${i}\u0000`);
+      });
+      let result = protectedText
         .replace(/\bcoffee\b/gi, (word) =>
           word[0] === "C" ? "Collection" : "collection",
         )
         .replace(/\bcup\b/gi, "product");
+      protectedNames.forEach((name, i) => {
+        result = result.replaceAll(`\u0000ORBIT${i}\u0000`, name);
+      });
+      return result;
+    };
     result.theme = generalized(result.theme);
     result.interpretation = generalized(result.interpretation);
     for (const direction of result.directions) {

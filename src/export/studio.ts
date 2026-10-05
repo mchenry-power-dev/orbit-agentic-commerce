@@ -8,6 +8,15 @@ import {
   validateStudioBrief,
 } from "../validation/placements";
 import { safeFilename } from "./index";
+import {
+  buildHandoffPreview,
+  defaultHandoffSelection,
+  handoffLogo,
+  type DemoHandoff,
+  type HandoffDestination,
+  type HandoffSelection,
+} from "../domain/handoff";
+import { handoffRules } from "../validation/handoff-rules";
 
 function selectedAssets(campaign: StudioCampaign, channel?: Channel) {
   return campaign.assets.filter(
@@ -176,15 +185,27 @@ export function buildStudioExport(campaign: StudioCampaign, channel?: Channel) {
         ? "png"
         : "jpg"
       : "json";
-    const filename = `${safeFilename(asset.id)}-v${version.number}.${ext}`;
+    const placementId =
+      asset.kind === "image"
+        ? ((asset.compatiblePlacementIds ?? [asset.placementId]).find(
+            (id) =>
+              !channel || getPlacement(id, campaign.brief).channel === channel,
+          ) ?? asset.placementId)
+        : asset.placementId;
+    const folder =
+      asset.kind === "image"
+        ? `${getPlacement(placementId, campaign.brief).channel}/${safeFilename(placementId)}/`
+        : "";
+    const filename = `${folder}${safeFilename(asset.id)}-v${version.number}.${ext}`;
     if (files[filename])
       throw new Error("Export filenames collided; nothing was downloaded.");
     files[filename] = version.raster
       ? rasterBytes(version.raster.dataUrl)
       : strToU8(JSON.stringify(version.content, null, 2));
     if (version.recipe)
-      files[`${safeFilename(asset.id)}-v${version.number}-recipe.json`] =
-        strToU8(JSON.stringify(version.recipe, null, 2));
+      files[
+        `${folder}${safeFilename(asset.id)}-v${version.number}-recipe.json`
+      ] = strToU8(JSON.stringify(version.recipe, null, 2));
     manifest.assets.push({
       assetId: asset.id,
       versionId: version.id,
@@ -200,6 +221,39 @@ export function buildStudioExport(campaign: StudioCampaign, channel?: Channel) {
     });
   }
   files["copy-field-mapping.csv"] = strToU8(studioCopyCsv(campaign, channel));
+  files["destination-handoff-summary.json"] = strToU8(
+    JSON.stringify(
+      {
+        scope:
+          "Approved creative downloads; not a complete launch-ready campaign or a platform import format",
+        ruleVersion: handoffRules.version,
+        accountAuthenticated: false,
+        platformPolicy: "Not checked",
+        published: false,
+        destinations: campaign.brief.channels
+          .filter(
+            (destination) =>
+              destination !== "email" && (!channel || channel === destination),
+          )
+          .map((destination) => {
+            const preview = buildHandoffPreview(
+              campaign,
+              defaultHandoffSelection(
+                campaign,
+                destination as HandoffDestination,
+              ),
+            );
+            return {
+              destination,
+              findings: preview.findings,
+              note: "Open Preview channel publishing to select the family, target and reviewed brand assets.",
+            };
+          }),
+      },
+      null,
+      2,
+    ),
+  );
   files["brand-provenance.json"] = strToU8(
     JSON.stringify(
       {
@@ -226,5 +280,212 @@ export function buildStudioExport(campaign: StudioCampaign, channel?: Channel) {
     manifest,
     bytes: zipSync(files, { level: 6 }),
     filename: `${safeFilename(campaign.brief.title)}-${channel ?? "portfolio"}-approved.zip`,
+  };
+}
+
+/** Checks the original approved logo rather than treating a product photograph as branding. */
+export async function verifyHandoffLogo(bytes: Uint8Array) {
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  if (
+    bytes.length !== handoffLogo.bytes ||
+    bytes.length < 33 ||
+    ![137, 80, 78, 71, 13, 10, 26, 10].every(
+      (value, index) => bytes[index] === value,
+    ) ||
+    view.getUint32(16) !== handoffLogo.width ||
+    view.getUint32(20) !== handoffLogo.height
+  )
+    throw new Error(
+      "The local logo does not match its recorded PNG dimensions and size. Brand review is unavailable.",
+    );
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new Uint8Array(bytes).buffer,
+  );
+  const sha = [...new Uint8Array(digest)]
+    .map((value) => value.toString(16).padStart(2, "0"))
+    .join("");
+  if (sha !== handoffLogo.sha256)
+    throw new Error(
+      "The local logo differs from its approved source hash. Brand review is unavailable.",
+    );
+  return bytes;
+}
+let verifiedLogo: Promise<Uint8Array> | undefined;
+export function loadHandoffLogo(): Promise<Uint8Array> {
+  return (verifiedLogo ??= (async () => {
+    const url = `${import.meta.env.BASE_URL}${handoffLogo.path.replace(/^\//, "")}`;
+    const response = await fetch(url, { credentials: "omit" });
+    if (!response.ok)
+      throw new Error(
+        "The bundled logo could not be read. Reopen this view to retry, or download an incomplete package.",
+      );
+    return verifyHandoffLogo(new Uint8Array(await response.arrayBuffer()));
+  })().catch((error: unknown) => {
+    verifiedLogo = undefined;
+    throw error;
+  }));
+}
+
+/** Explicitly incomplete downloads include approved current artifacts only, never launch-ready claims. */
+export async function buildDestinationExport(
+  campaign: StudioCampaign,
+  selection: HandoffSelection,
+  options: {
+    allowIncomplete?: boolean;
+    handoff?: DemoHandoff;
+    logoBytes?: Uint8Array;
+  } = {},
+) {
+  const preview = buildHandoffPreview(campaign, selection);
+  if (!preview.canComplete && !options.allowIncomplete)
+    throw new Error(
+      "This destination is incomplete. Choose the explicitly incomplete download to include the remaining requirements.",
+    );
+  if (
+    options.handoff &&
+    (options.handoff.campaignId !== campaign.id ||
+      options.handoff.signature !== preview.signature)
+  )
+    throw new Error(
+      "The current mapping or asset versions differ from this saved handoff. The original record is unchanged; review and create a revised handoff.",
+    );
+  const files: Record<string, Uint8Array> = {};
+  const exportedAssets = [];
+  for (const reference of preview.assets) {
+    const asset = campaign.assets.find(
+      (item) => item.id === reference.assetId,
+    )!;
+    const version = asset.versions.find(
+      (item) => item.id === reference.versionId,
+    )!;
+    const folder = `${selection.destination}/${safeFilename(reference.placements[0] ?? (asset.kind === "video" ? "video-brief" : asset.kind))}`;
+    const extension = version.raster
+      ? version.raster.mime === "image/png"
+        ? "png"
+        : "jpg"
+      : "json";
+    const filename = `${folder}/${safeFilename(asset.id)}-v${version.number}.${extension}`;
+    if (files[filename])
+      throw new Error("Export filenames collided; nothing was downloaded.");
+    files[filename] = version.raster
+      ? rasterBytes(version.raster.dataUrl)
+      : strToU8(JSON.stringify(version.content, null, 2));
+    if (version.recipe)
+      files[
+        `${folder}/${safeFilename(asset.id)}-v${version.number}-recipe.json`
+      ] = strToU8(JSON.stringify(version.recipe, null, 2));
+    exportedAssets.push({
+      ...reference,
+      filename,
+      ...(asset.kind === "video"
+        ? { deliverable: "Video brief only — not rendered video" }
+        : {}),
+    });
+  }
+  if (
+    selection.destination === "google" &&
+    selection.brandAssetsReviewed &&
+    selection.logoVerified &&
+    preview.mapping.performanceMax
+  ) {
+    const brand = (
+      preview.mapping.performanceMax as { brandAssets: { logo: unknown } }
+    ).brandAssets;
+    if (brand.logo)
+      files["google/brand-assets/cosmic-cat-original-logo.png"] =
+        options.logoBytes
+          ? await verifyHandoffLogo(options.logoBytes)
+          : await loadHandoffLogo();
+  }
+  const manifest = {
+    schemaVersion: 1,
+    campaignId: campaign.id,
+    destination: selection.destination,
+    status: preview.canComplete
+      ? "local-demo-mapping"
+      : "incomplete-asset-package",
+    generatedAt: new Date().toISOString(),
+    handoffId: options.handoff?.id ?? null,
+    ruleVersion: handoffRules.version,
+    assets: exportedAssets,
+    accountAuthenticated: false,
+    platformPolicy: "Not checked",
+    published: false,
+    approvalMeaning:
+      "Only current human-approved versions are included. This does not establish platform approval or live publication.",
+  };
+  files["manifest.json"] = strToU8(JSON.stringify(manifest, null, 2));
+  files["destination-review-mapping.json"] = strToU8(
+    JSON.stringify(preview.mapping, null, 2),
+  );
+  files["validation-findings.json"] = strToU8(
+    JSON.stringify(
+      { rules: handoffRules, findings: preview.findings },
+      null,
+      2,
+    ),
+  );
+  if (options.handoff)
+    files["local-demo-handoff.json"] = strToU8(
+      JSON.stringify(options.handoff, null, 2),
+    );
+  const copy = preview.mapping.copy as StudioCampaign["plan"]["copy"] | null;
+  const copyRows = [["destination", "field", "text", "scope"]];
+  if (copy)
+    for (const field of [
+      "headlines",
+      "longHeadlines",
+      "descriptions",
+      "ctas",
+    ] as const)
+      for (const value of copy[field])
+        copyRows.push([
+          selection.destination,
+          field,
+          value,
+          "Approved copy review mapping; not a vendor import schema",
+        ]);
+  files[`${selection.destination}/copy-field-mapping.csv`] = strToU8(
+    copyRows.map((row) => row.map(csvQuote).join(",")).join("\r\n"),
+  );
+  files["source-provenance.json"] = strToU8(
+    JSON.stringify(
+      {
+        brand: campaign.brand.name,
+        website: campaign.brand.website,
+        ownership: campaign.brand.ownership,
+        sources: campaign.brand.sources
+          .filter((source) => source.included)
+          .map(({ image: _image, ...source }) => source),
+        products: campaign.brand.products
+          .filter((product) => campaign.brief.productIds.includes(product.id))
+          .map(({ photo: _photo, ...product }) => product),
+      },
+      null,
+      2,
+    ),
+  );
+  files["READ-ME.txt"] = strToU8(
+    [
+      preview.canComplete
+        ? "LOCAL DEMO HANDOFF PACKAGE"
+        : "INCOMPLETE ASSET PACKAGE — NOT LAUNCH READY",
+      `Destination: ${selection.destination}`,
+      "Nothing was sent to an ad platform or website. No account was authenticated, policy approved, campaign activated or spend changed.",
+      "JSON and CSV are human-review mappings, not executable API requests or verified vendor import files.",
+      "Only the listed current approved artifact versions are included. Missing, stale, rejected and invalid outputs are omitted.",
+      "Video briefs contain scripts and shot lists, not rendered video. Website heroes need responsive integration and accessibility review in the actual site.",
+      ...preview.findings.map(
+        (finding) => `${finding.status}: ${finding.message}`,
+      ),
+    ].join("\n\n"),
+  );
+  return {
+    files,
+    manifest,
+    preview,
+    bytes: zipSync(files, { level: 6 }),
+    filename: `${safeFilename(campaign.brief.title)}-${selection.destination}-${preview.canComplete ? "demo-handoff" : "incomplete"}.zip`,
   };
 }

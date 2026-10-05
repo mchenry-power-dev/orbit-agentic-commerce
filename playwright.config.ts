@@ -36,6 +36,25 @@ export default defineConfig({
         hasTouch: true,
       },
     },
+    {
+      name: "webkit-phone",
+      testMatch: "**/quality.spec.ts",
+      use: {
+        ...devices["iPhone 13"],
+        browserName: "webkit",
+        viewport: { width: 390, height: 844 },
+      },
+    },
+    {
+      name: "firefox-smoke",
+      testMatch: "**/quality.spec.ts",
+      grep: /offline sample smoke/,
+      use: {
+        ...devices["Desktop Firefox"],
+        browserName: "firefox",
+        viewport: { width: 1440, height: 900 },
+      },
+    },
   ],
   webServer: externalBaseURL
     ? undefined

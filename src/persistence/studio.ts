@@ -24,6 +24,11 @@ export class StudioMemoryPersistence implements StudioPersistence {
 /** V2 uses a new record in the original database; the V1 app record is retained verbatim. */
 export class StudioIndexedDbPersistence implements StudioPersistence {
   private database?: Promise<IDBDatabase>;
+  private temporary?: StudioMemoryPersistence;
+  /** Explicit opt-in only; leaves every existing IndexedDB record untouched. */
+  useTemporaryWorkspace() {
+    this.temporary = new StudioMemoryPersistence();
+  }
   constructor(private name = "orbit-studio-public-v1") {}
   private open() {
     return (this.database ??= new Promise<IDBDatabase>((resolve, reject) => {
@@ -49,12 +54,15 @@ export class StudioIndexedDbPersistence implements StudioPersistence {
     });
   }
   load() {
+    if (this.temporary) return this.temporary.load();
     return this.read<StudioState>("studio-v2");
   }
   legacy() {
+    if (this.temporary) return this.temporary.legacy();
     return this.read<AppState>("app");
   }
   async save(state: StudioState) {
+    if (this.temporary) return this.temporary.save(state);
     const db = await this.open();
     return new Promise<void>((resolve, reject) => {
       const tx = db.transaction("state", "readwrite");

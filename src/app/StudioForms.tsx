@@ -1,4 +1,5 @@
 import type { Channel, StudioBrand, StudioBrief } from "../domain/studio";
+import type { ReactNode } from "react";
 import { placementSpecs } from "../validation/placements";
 import { Icon } from "../components/Icon";
 
@@ -27,6 +28,7 @@ export function BriefForm({
   onPlan,
   onPreset,
   busy,
+  catalog,
 }: {
   brief: StudioBrief;
   brand: StudioBrand;
@@ -35,6 +37,7 @@ export function BriefForm({
   onPlan: () => void;
   onPreset: () => void;
   busy: boolean;
+  catalog?: ReactNode;
 }) {
   const field = <K extends keyof StudioBrief>(key: K, value: StudioBrief[K]) =>
     onChange({ ...brief, [key]: value });
@@ -76,6 +79,7 @@ export function BriefForm({
   return (
     <div className="creation-grid">
       <section className="surface brief-surface">
+        {catalog}
         <div className="section-title">
           <div>
             <span className="eyebrow">01 · Brief & brand</span>
@@ -132,47 +136,49 @@ export function BriefForm({
             Website, references & photos
           </button>
         </div>
-        <fieldset className="product-fieldset">
-          <legend>Products</legend>
-          <div className="product-tray">
-            {brand.products.map((product) => (
-              <label
-                className={`product-choice ${brief.productIds.includes(product.id) ? "selected" : ""}`}
-                key={product.id}
-              >
-                {product.photo ? (
-                  <img src={photoUrl(product.photo)} alt={product.name} />
-                ) : (
-                  <div className="empty-photo">Photo needed</div>
-                )}
-                <span>
-                  <strong>{product.name}</strong>
-                  <small>{product.size}</small>
-                  <small>
-                    {product.confirmed
-                      ? "Confirmed product facts"
-                      : "Facts need confirmation"}
-                  </small>
-                </span>
-                <input
-                  type="checkbox"
-                  checked={brief.productIds.includes(product.id)}
-                  onChange={(e) =>
-                    field(
-                      "productIds",
-                      e.target.checked
-                        ? [...brief.productIds, product.id]
-                        : brief.productIds.filter((id) => id !== product.id),
-                    )
-                  }
-                />
-              </label>
-            ))}
-          </div>
-          {!brand.products.length && (
-            <p>Add a product and an owned photo in the brand library.</p>
-          )}
-        </fieldset>
+        {(!catalog || brand.products.some((product) => !product.catalog)) && (
+          <fieldset className="product-fieldset">
+            <legend>Products</legend>
+            <div className="product-tray">
+              {brand.products.map((product) => (
+                <label
+                  className={`product-choice ${brief.productIds.includes(product.id) ? "selected" : ""}`}
+                  key={product.id}
+                >
+                  {product.photo ? (
+                    <img src={photoUrl(product.photo)} alt={product.name} />
+                  ) : (
+                    <div className="empty-photo">Photo needed</div>
+                  )}
+                  <span>
+                    <strong>{product.name}</strong>
+                    <small>{product.size}</small>
+                    <small>
+                      {product.confirmed
+                        ? "Confirmed product facts"
+                        : "Facts need confirmation"}
+                    </small>
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={brief.productIds.includes(product.id)}
+                    onChange={(e) =>
+                      field(
+                        "productIds",
+                        e.target.checked
+                          ? [...brief.productIds, product.id]
+                          : brief.productIds.filter((id) => id !== product.id),
+                      )
+                    }
+                  />
+                </label>
+              ))}
+            </div>
+            {!brand.products.length && (
+              <p>Add a product and an owned photo in the brand library.</p>
+            )}
+          </fieldset>
+        )}
         <fieldset>
           <legend>Channels & placements</legend>
           <div className="channel-picker">
@@ -478,14 +484,26 @@ export function BriefForm({
                       key={index}
                       type="number"
                       aria-label={`${device} ${index ? "height" : "width"}`}
-                      value={brief.rawInputs?.[`${device}-${index ? "height" : "width"}`] ?? brief.websiteSize[device][index]}
+                      value={
+                        brief.rawInputs?.[
+                          `${device}-${index ? "height" : "width"}`
+                        ] ?? brief.websiteSize[device][index]
+                      }
                       onChange={(e) => {
                         const size = [...brief.websiteSize[device]] as [
                           number,
                           number,
                         ];
                         size[index] = Number(e.target.value);
-                        onChange({ ...brief, rawInputs: { ...brief.rawInputs, [`${device}-${index ? "height" : "width"}`]: e.target.value }, websiteSize: { ...brief.websiteSize, [device]: size } });
+                        onChange({
+                          ...brief,
+                          rawInputs: {
+                            ...brief.rawInputs,
+                            [`${device}-${index ? "height" : "width"}`]:
+                              e.target.value,
+                          },
+                          websiteSize: { ...brief.websiteSize, [device]: size },
+                        });
                       }}
                     />
                   ))}
@@ -500,11 +518,23 @@ export function BriefForm({
                     key={index}
                     type="number"
                     aria-label={`Email ${index ? "height" : "width"}`}
-                    value={brief.rawInputs?.[`email-${index ? "height" : "width"}`] ?? brief.emailSize[index]}
+                    value={
+                      brief.rawInputs?.[
+                        `email-${index ? "height" : "width"}`
+                      ] ?? brief.emailSize[index]
+                    }
                     onChange={(e) => {
                       const size = [...brief.emailSize] as [number, number];
                       size[index] = Number(e.target.value);
-                      onChange({ ...brief, rawInputs: { ...brief.rawInputs, [`email-${index ? "height" : "width"}`]: e.target.value }, emailSize: size });
+                      onChange({
+                        ...brief,
+                        rawInputs: {
+                          ...brief.rawInputs,
+                          [`email-${index ? "height" : "width"}`]:
+                            e.target.value,
+                        },
+                        emailSize: size,
+                      });
                     }}
                   />
                 ))}

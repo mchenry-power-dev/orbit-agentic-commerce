@@ -23,6 +23,8 @@ import {
   validateStudioBrief,
 } from "../validation/placements";
 import { renderComposition } from "../providers/composition";
+import type { StoreCatalog } from "../domain/catalog";
+import { createDemoHandoff, type HandoffSelection } from "../domain/handoff";
 
 export function studioScenePrompt(
   campaign: StudioCampaign,
@@ -174,6 +176,72 @@ export class StudioEngine {
       else state.brands[index] = structuredClone(brand);
     });
   }
+  async saveCatalogs(catalogs: StoreCatalog[]) {
+    return this.write((state) => {
+      state.catalogs = structuredClone(catalogs);
+    });
+  }
+  async addHandoff(id: string, selection: HandoffSelection) {
+    this.idle();
+    return this.write((state) => {
+      const campaign = this.find(state, id);
+      const { record, reused } = createDemoHandoff(
+        campaign,
+        selection,
+        campaign.handoffs ?? [],
+        { now: this.now(), id: `demo-${this.id()}` },
+      );
+      if (!reused) {
+        (campaign.handoffs ??= []).push(record);
+        this.event(
+          campaign,
+          "Demo handoff created locally. Nothing was sent to an advertising platform or website.",
+        );
+      }
+      return structuredClone(record);
+    });
+  }
+  async recomposeAsset(
+    id: string,
+    assetId: string,
+    overrides: NonNullable<StudioAsset["recipeOverrides"]>,
+  ) {
+    this.idle();
+    await this.write((state) => {
+      const campaign = this.find(state, id);
+      const asset = campaign.assets.find((item) => item.id === assetId);
+      if (!asset || asset.kind !== "image")
+        throw new Error("Choose a current image variant.");
+      if (
+        overrides.productId &&
+        !campaign.brief.productIds.includes(overrides.productId)
+      )
+        throw new Error("Choose a product from this campaign snapshot.");
+      if (
+        getPlacement(asset.placementId, campaign.brief).channel === "google" &&
+        overrides.textOverlay
+      )
+        throw new Error("Google image variants keep copy separate.");
+      if (
+        overrides.spacing !== undefined &&
+        (overrides.spacing < 0.06 || overrides.spacing > 0.18)
+      )
+        throw new Error("Choose a supported spacing value.");
+      asset.recipeOverrides = structuredClone(overrides);
+      asset.stale = true;
+      asset.approval = undefined;
+      this.event(
+        campaign,
+        "Selected variant composition changed; a new version needs review.",
+        assetId,
+      );
+    });
+    return this.run(
+      id,
+      [assetId],
+      "Recomposed selected variant using explicit controls.",
+    );
+  }
   async setPreferences(preferences: StudioState["preferences"]) {
     this.idle();
     return this.write((state) => {
@@ -323,8 +391,13 @@ export class StudioEngine {
     const plannedComposition = direction.placementComposition?.find(
       (p) => p.placementId === asset.placementId,
     );
-    const products = campaign.brand.products.filter((p) =>
-      campaign.brief.productIds.includes(p.id),
+    const chosenIds = asset.recipeOverrides?.productId
+      ? [asset.recipeOverrides.productId]
+      : direction.productIds;
+    const products = campaign.brand.products.filter(
+      (p) =>
+        campaign.brief.productIds.includes(p.id) &&
+        (!chosenIds?.length || chosenIds.includes(p.id)),
     );
     return {
       version: 1,
@@ -336,16 +409,21 @@ export class StudioEngine {
       productIds: products.map((p) => p.id),
       productPhotos: products.map((p) => p.photo),
       palette: direction.palette,
+      artDirection: direction.artDirection,
       mood: direction.mood,
       composition: plannedComposition?.composition ?? direction.composition,
       headline: direction.headline,
       body: direction.body,
       cta: direction.cta,
       textOverlay:
-        placement.channel === "website" || placement.channel === "email",
+        placement.channel === "google"
+          ? false
+          : (direction.textOverlay ??
+            (placement.channel === "website" || placement.channel === "email")),
       spacing:
         plannedComposition?.spacing ??
         (campaign.plan.generousSpace === false ? 0.06 : 0.12),
+      ...asset.recipeOverrides,
     };
   }
   private dependency(campaign: StudioCampaign, asset: StudioAsset): string {
@@ -371,8 +449,15 @@ export class StudioEngine {
             negativePrompt: d.negativePrompt,
             excludedMotifs: d.excludedMotifs,
           })),
-        products,
-        selectedSources,
+        products: products.filter((p) => recipe.productIds.includes(p.id)),
+        selectedSources: selectedSources.filter(
+          (s) =>
+            s.role === "visual-inspiration" ||
+            s.role === "page" ||
+            products
+              .filter((p) => recipe.productIds.includes(p.id))
+              .some((p) => p.sourceIds.includes(s.id)),
+        ),
         mode: campaign.mode,
       });
     }
@@ -430,6 +515,13 @@ export class StudioEngine {
           title: spec.title,
           compatiblePlacementIds: spec.compatiblePlacementIds,
         };
+        if (
+          next.recipeOverrides?.productId &&
+          !brief.productIds.includes(next.recipeOverrides.productId)
+        ) {
+          next.recipeOverrides = { ...next.recipeOverrides };
+          delete next.recipeOverrides.productId;
+        }
         if (old.dependency !== this.dependency(campaign, next)) {
           next.stale = true;
           next.approval = undefined;

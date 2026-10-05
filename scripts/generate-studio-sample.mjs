@@ -52,7 +52,7 @@ try {
     let sequence = 0;
     const engine = new StudioEngine(new StudioMemoryPersistence(), {
       id: () => `cosmic-sample-${String(++sequence).padStart(4, "0")}`,
-      clock: () => new Date("2026-10-03T12:00:00.000Z"),
+      clock: () => new Date("2026-10-05T12:00:00.000Z"),
       render: (recipe, brand, signal) =>
         renderComposition(recipe, brand, signal, {
           mime: "image/jpeg",
@@ -62,9 +62,37 @@ try {
     await engine.initialize();
     const brand = cosmicBrand(),
       brief = christmasSampleBrief(brand);
+    brief.productIds = brand.products
+      .filter((product) =>
+        ["cosmic-candy-cane", "cosmic-solar-surge"].includes(product.id),
+      )
+      .map((product) => product.id);
+    brief.description =
+      "Create a photographic Christmas coffee story for Candy Cane and a contemporary editorial coffee ritual for Solar Surge. Keep the original product photographs intact. Adapt both directions for Google Performance Max, Meta feed and responsive website heroes.";
     const plan = interpretLocalBrief(brief, brand, {
       generousSpace: true,
       tone: "",
+    });
+    Object.assign(plan.directions[0], {
+      name: "Candy Cane · Christmas warmth",
+      productIds: ["cosmic-candy-cane"],
+      artDirection: "scene-led",
+      headline: "A little Christmas warmth.",
+      body: "Candy Cane. Peppermint and sweet flavor notes. Your festive coffee moment.",
+      cta: "Explore Candy Cane",
+    });
+    Object.assign(plan.directions[1], {
+      name: "Solar Surge · The coffee journal",
+      productIds: ["cosmic-solar-surge"],
+      artDirection: "editorial",
+      mood: "editorial",
+      theme: "The coffee journal",
+      scene:
+        "An editorial coffee ritual: the intact Solar Surge scene, warm paper and confident typography. Desktop pairs photo and copy; mobile opens with the headline above the photograph.",
+      palette: ["#153c32", "#17483c", "#c8ddce", "#f5f1e8"],
+      headline: "Make room for your ritual.",
+      body: "Solar Surge. Bright citrus and warm flavor notes. A coffee moment, all your own.",
+      cta: "Explore Solar Surge",
     });
     plan.mode = "prebuilt-sample";
     plan.confirmed = true;
@@ -96,7 +124,7 @@ try {
       `Sample exceeds the 5 MB transfer target (${totalBytes} bytes). Inspect JPEG quality before publishing.`,
     );
   const directory = resolve(project, "public/samples");
-  const evidence = resolve(project, "../_work/v2-sample");
+  const evidence = resolve(project, "../_work/quality-04/sample");
   await mkdir(directory, { recursive: true });
   await mkdir(evidence, { recursive: true });
   const images = sample.assets
@@ -122,16 +150,19 @@ try {
     generatedBy: "node scripts/generate-studio-sample.mjs",
     pipeline:
       "StudioEngine + interpretLocalBrief + renderComposition, in an isolated Chromium context",
-    fixtureTime: "2026-10-03T12:00:00.000Z",
+    fixtureTime: "2026-10-05T12:00:00.000Z",
     mode: "prebuilt-sample",
     rendering:
-      "Local photo composition; original full-frame Cosmic Cat photos, designed frames and drawn light accents. No generated photographed scene.",
+      "Local photo composition: large intact original Cosmic Cat photos. Photographic-story layouts extend soft-focus material from the same photo; editorial layouts use paper tones and typography. No drawn ornaments or generated photographed scene.",
     rasterEncoding:
       "Native placement dimensions, browser Canvas JPEG quality 0.90; no arbitrary downsampling.",
     approvals: 0,
     totalBytes,
     assetCount: sample.assets.length,
     imageCount: images.length,
+    productCount: briefProductCount(sample),
+    thumbnailEncoding:
+      "Up to 768 px, JPEG quality 0.78, resampled from the exact finished export canvas.",
     sources:
       "Owner-authorized bounded public snapshot in src/fixtures/cosmic-cat.ts; retrieved 2026-10-03.",
     reproducibility:
@@ -149,11 +180,7 @@ try {
       2,
     ),
   );
-  for (const id of [
-    "direction-1-google-square",
-    "direction-1-website-desktop",
-    "direction-2-website-mobile",
-  ]) {
+  for (const id of images.map((image) => image.assetId)) {
     const raster = sample.assets.find((asset) => asset.id === id)?.versions[0]
       .raster;
     if (raster)
@@ -169,4 +196,8 @@ try {
 } finally {
   await browser?.close();
   await server.close();
+}
+
+function briefProductCount(sample) {
+  return new Set(sample.brief.productIds).size;
 }

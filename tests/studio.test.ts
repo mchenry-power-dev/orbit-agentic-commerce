@@ -1156,10 +1156,18 @@ describe("V2 versioned creation, recovery and export", () => {
       m.filename.endsWith(".png"),
     );
     expect(images).toHaveLength(12);
-    for (const image of images)
+    for (const image of images) {
+      const asset = c.assets.find((item) => item.id === image.assetId)!;
+      const placement = getPlacement(asset.placementId, c.brief);
+      expect(image.filename).toMatch(
+        new RegExp(
+          `^${placement.channel}/${placement.id}/[a-z0-9-]+-v\\d+\\.png$`,
+        ),
+      );
       expect([...unzipped[image.filename].slice(0, 8)]).toEqual([
         137, 80, 78, 71, 13, 10, 26, 10,
       ]);
+    }
     expect(strFromU8(unzipped["brand-provenance.json"])).toContain(
       "owner-authorized-snapshot",
     );
@@ -1192,7 +1200,7 @@ describe("V2 versioned creation, recovery and export", () => {
     )!.included = false;
     expect(studioExportGate(c).allowed).toBe(false);
   });
-  it("neutralizes spreadsheet formula text and keeps ZIP names inside the archive root", async () => {
+  it("neutralizes spreadsheet formula text and keeps organized ZIP paths inside the archive root", async () => {
     const s = await reviewed();
     const c = structuredClone(find(s.engine, s.id));
     c.brief.title = "../../CON: campaign";
@@ -1201,7 +1209,19 @@ describe("V2 versioned creation, recovery and export", () => {
     const exported = buildStudioExport(c);
     expect(exported.filename).not.toMatch(/[\\/]/);
     expect(
-      Object.keys(exported.files).every((name) => !/[\\/]/.test(name)),
+      Object.keys(exported.files).every(
+        (name) =>
+          !name.startsWith("/") &&
+          !name.includes("\\") &&
+          name
+            .split("/")
+            .every(
+              (segment) =>
+                segment !== "." &&
+                segment !== ".." &&
+                /^[a-zA-Z0-9_.-]+$/.test(segment),
+            ),
+      ),
     ).toBe(true);
   });
   it("stores V2 separately while retaining a complete legacy record verbatim", async () => {

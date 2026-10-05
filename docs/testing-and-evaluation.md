@@ -9,7 +9,7 @@ npm ci
 npm run typecheck
 npm test
 npm run build
-npx playwright install chromium
+npx playwright install chromium firefox webkit
 npm run test:e2e
 npm run check
 ```
@@ -17,6 +17,35 @@ npm run check
 Recorded tooling: Node 24.18.0 and npm 11.16.0. Default sample/local-composition checks need no paid service or provider key.
 
 Set `ORBIT_E2E_BUILT=1` to run browser checks against the local production preview. To replay the same assertions against the deployed demo, set `ORBIT_E2E_BASE_URL=https://mchenry-power-dev.github.io/orbit-agentic-commerce/` and run `npm run test:e2e`; an external base URL starts no local web server or service. Each browser case uses an isolated context. Desktop is 1365×900; narrow is 390×844 with touch/mobile emulation.
+
+## Quality enhancement verification: 2026-10-05
+
+This enhancement preserves the released no-key workflow and adds a catalog-first journey, two photographic composition systems, selected-variant controls and local channel handoffs. The existing production baseline passed **133 unit tests and 42 browser cases** before changes. Baseline failures: **none**.
+
+| Check                                     | Recorded result                                                                                                                                                                                                                                                    |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Early art-direction gate                  | Both systems rendered on Candy Cane and Solar Surge; desktop/mobile reading order, packaging fidelity and typography visually reviewed before sample generation                                                                                                    |
+| Native media inspection                   | **36 JPEGs decoded**: 24 two-direction/two-product placement prototypes plus 12 sample exports; full-size visual inspection included square, wide, story and responsive heroes                                                                                     |
+| Prepared sample                           | 15 assets / 12 native JPEGs / two products / zero approvals; 3,862,566-byte JSON including bounded preview rasters                                                                                                                                                 |
+| Preview/export contract                   | One finished Canvas raster; thumbnails at most 768 px, resampled from it; protected source frame retained; local fonts loaded before rendering                                                                                                                     |
+| Focused composition + Studio regression   | **62 passed** after art-direction and framing changes; subsequent candidate-wide checks are recorded separately                                                                                                                                                    |
+| Responsive visual review                  | 22 actual production-preview captures at 360x800, 390x844, 768x1024, 1366x768, 1440x1200 and 1536x1000; no horizontal overflow, browser exceptions or off-origin/service requests; inspected review footers remain visible                                         |
+| Final gallery refresh                     | Five actual-app documentation captures refreshed and visually inspected at 1440x1200 and 390x844 after the 768 px preview update; original sample unapproved, Google local handoff intentionally reviewed                                                          |
+| Preview refinement                        | Increased bounded previews from 480 to 768 px for large gallery cards; all 12 native JPEG SHA-256 hashes remained unchanged                                                                                                                                        |
+| Candidate typecheck, build and unit suite | **PASS: 177 unit tests in 10 files**, typecheck and production build                                                                                                                                                                                               |
+| Candidate browser acceptance              | **66 configured scenarios verified** across the full production rehearsal and focused rechecks: 30 desktop Chromium, 30 phone Chromium, five phone WebKit and one Firefox smoke; details below                                                                     |
+| Static network and storage boundaries     | Sample/new-campaign journeys made no off-origin or Orbit-service requests; explicit public-read fixtures were separately controlled; unrelated project storage remained intact                                                                                     |
+| CI and publication evidence               | The [existing workflow](https://github.com/mchenry-power-dev/orbit-agentic-commerce/actions/workflows/verify-and-deploy.yml) records complete checks and Pages deployment by commit; the release handoff identifies the served commit and hosted acceptance result |
+
+The final local rehearsal passed 64 cases. One new test used a label locator that included a textarea's initial content; switching to its accessible textbox role preserved the assertion and passed the focused desktop replay and the full narrow case. Firefox could not create its blank tab inside the Windows execution sandbox; the unchanged smoke passed when the harness ran outside that sandbox, with browser security unchanged. All 66 scenarios therefore have passing results; these rechecks are not additional unique coverage. The Windows preview helper also required targeted termination after the completed run to allow report teardown. No application check was skipped.
+
+### Local performance lab
+
+An isolated production preview on Windows, Chromium 153.0.8010.12, a Ryzen AI 7 350 and 32 GB RAM used three fresh 1440×900 browser contexts with HTTP cache disabled and no CPU/network throttling. Median useful Home readiness was **282 ms**, first contentful paint **88 ms**, and opening the prepared 15-output sample **273 ms**. The initial Home transferred **4,519,644 bytes** in this uncompressed local preview. One new default Solar Surge campaign composed **15 outputs / 12 rasters in 31.8 seconds**. Readiness timings include automation/observation overhead; this small localhost sample is not hosted or field performance, a mobile-device measurement, a Lighthouse score or a Core Web Vitals claim.
+
+The prototype evidence is local working material, not a second public asset library. Reproduce the shipped example with `npm run sample:studio`; its [provenance](../public/samples/cosmic-christmas.PROVENANCE.json) and [generator](../scripts/generate-studio-sample.mjs) identify source and encoding. No paid provider calls, real store authentication or ad-account writes were tested or authorized. Emulation is not physical-device testing, and lab timings are not field performance.
+
+Candidate regressions cover catalog identity/variant/image selection, explicit refresh and campaign-snapshot retention, truthful retrieval failure, exact composition overrides, destination-specific required fields, immutable/deduplicated local handoffs, incomplete downloads and preserved unrelated browser data. The [catalog](catalog.md) and [channel handoff](channel-handoff.md) documents define the implemented subset.
 
 ## V2 assertions
 
@@ -35,7 +64,7 @@ Set `ORBIT_E2E_BUILT=1` to run browser checks against the local production previ
 
 [Studio tests](../tests/studio.test.ts) use genuine rasters encoded by sharp at recipe dimensions, not DOM canvas or invented metadata. [Composition tests](../tests/composition.test.ts), [service security](../tests/service-security.test.ts), [service runtime contracts](../tests/service-runtime.test.ts) and [client mapping tests](../tests/service-client.test.ts) exercise separate boundaries. These tests use bounded mock providers where stated; they never prove a live generative workflow.
 
-## No-key release verification
+## Previous no-key release verification: 2026-10-03
 
 The release scope is the static GitHub Pages workflow without a local service or paid provider. The owner-approved no-key release supersedes the earlier publication dependency on paid runtime/provider approval. Release checks cover static service unavailability, truthful capability labels and the sample → new campaign → composition → revision → exact approval → ZIP → refresh/navigation journey at desktop and narrow widths. The [existing verification and Pages workflow](https://github.com/mchenry-power-dev/orbit-agentic-commerce/actions/workflows/verify-and-deploy.yml) records CI and deployment results by commit. Hosted acceptance is a separate check against the served application; the historical implementation evidence below remains separate.
 

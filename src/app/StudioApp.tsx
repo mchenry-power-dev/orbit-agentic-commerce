@@ -43,11 +43,27 @@ import {
   getPlacement,
   placementSpecs,
   validateStudioBrief,
+  studioAdsCharacterCount,
 } from "../validation/placements";
 import { BriefForm, channelNames, photoUrl } from "./StudioForms";
 import BrandLibrary from "./BrandLibrary";
 import { localDevelopmentServiceUrl } from "../providers/service-access";
 import "./studio.css";
+import VariantEditor from "./VariantEditor";
+import ChannelHandoff from "./ChannelHandoff";
+import CatalogPicker from "./CatalogPicker";
+import { cosmicCatalog } from "../fixtures/catalog";
+import { catalogSelectionBrand } from "../domain/catalog";
+
+function defaultCatalogBrand() {
+  const store = cosmicCatalog(),
+    product = store.products[0];
+  return catalogSelectionBrand(
+    store,
+    [{ productId: product.id, variantId: product.defaultVariantId }],
+    cosmicBrand(),
+  );
+}
 
 type Route = {
   view: "home" | "campaigns" | "brand" | "create" | "campaign";
@@ -74,8 +90,12 @@ function download(bytes: Uint8Array | string, filename: string, type: string) {
   anchor.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
-const firstRaster = (campaign?: StudioCampaign) =>
-  campaign?.assets.map(studioVersion).find((v) => v?.raster)?.raster?.dataUrl;
+const firstRaster = (campaign?: StudioCampaign) => {
+  const raster = campaign?.assets
+    .map(studioVersion)
+    .find((v) => v?.raster)?.raster;
+  return raster?.previewDataUrl ?? raster?.dataUrl;
+};
 const modeText = (mode?: string) =>
   mode === "live-generation"
     ? "Live-generation mode · unavailable in hosted demo"
@@ -140,8 +160,12 @@ export default function StudioApp() {
   const [route, setRoute] = useState<Route>(readRoute);
   const [ready, setReady] = useState(false),
     [locked, setLocked] = useState(false);
-  const [brief, setBrief] = useState<StudioBrief>(() => freshBrief());
-  const [brand, setBrand] = useState<StudioBrand>(cosmicBrand);
+  const [storageFailed, setStorageFailed] = useState(false);
+  const [temporaryWorkspace, setTemporaryWorkspace] = useState(false);
+  const [brief, setBrief] = useState<StudioBrief>(() =>
+    freshBrief(defaultCatalogBrand()),
+  );
+  const [brand, setBrand] = useState<StudioBrand>(defaultCatalogBrand);
   const [plan, setPlan] = useState<StudioPlan>();
   const [sample, setSample] = useState<StudioCampaign>();
   const [busy, setBusy] = useState(false),
@@ -155,6 +179,8 @@ export default function StudioApp() {
   const [reviewId, setReviewId] = useState<string>(),
     [revisionNote, setRevisionNote] = useState("");
   const [copyEdit, setCopyEdit] = useState<StudioPlan["copy"]>();
+  const [handoffOpen, setHandoffOpen] = useState(false);
+  const handoffTrigger = useRef<HTMLButtonElement>(null);
   const [selected, setSelected] = useState<string[]>([]),
     [family, setFamily] = useState("all");
   const [destination, setDestination] = useState<Channel | "all">("all");
@@ -185,6 +211,7 @@ export default function StudioApp() {
     studioExportGate(campaign, destination === "all" ? undefined : destination);
 
   function go(hash: string) {
+    setHandoffOpen(false);
     setReviewId(undefined);
     location.hash = hash;
   }
@@ -238,6 +265,19 @@ export default function StudioApp() {
     planRef.current = undefined;
     setPlan(undefined);
     autosave(briefRef.current, next);
+  }
+  async function selectCatalogProducts(
+    nextBrand: StudioBrand,
+    productIds: string[],
+  ) {
+    const nextBrief = { ...briefRef.current, productIds };
+    loadBrief(nextBrief, nextBrand);
+    await engine.saveDraft(
+      nextBrief,
+      nextBrand,
+      undefined,
+      editingCampaignId.current,
+    );
   }
   function changePlan(next: StudioPlan) {
     planRef.current = next;
@@ -304,6 +344,7 @@ export default function StudioApp() {
             });
           } catch (err) {
             if (!disposed) {
+              setStorageFailed(true);
               setError(
                 err instanceof Error
                   ? err.message
@@ -319,7 +360,7 @@ export default function StudioApp() {
       unsubscribe();
       release?.();
     };
-  }, [engine, storage]);
+  }, [engine, storage, temporaryWorkspace]);
   useEffect(() => {
     const update = () => {
       const next = readRoute();
@@ -339,13 +380,17 @@ export default function StudioApp() {
       if (next.view === "create" && loadedCampaignId.current) {
         const draft = engine.getSnapshot().newDraft;
         if (draft) loadBrief(draft.brief, draft.brand, draft.plan);
-        else loadBrief(freshBrief(), cosmicBrand());
+        else {
+          const nextBrand = defaultCatalogBrand();
+          loadBrief(freshBrief(nextBrand), nextBrand);
+        }
         loadedCampaignId.current = undefined;
         editingCampaignId.current = undefined;
       }
       setRoute(next);
       setSelected([]);
       setReviewId(undefined);
+      setHandoffOpen(false);
       setError("");
     };
     const unload = (e: BeforeUnloadEvent) => {
@@ -434,7 +479,7 @@ export default function StudioApp() {
   function startNew(preset = false) {
     editingCampaignId.current = undefined;
     loadedCampaignId.current = undefined;
-    const nextBrand = cosmicBrand(),
+    const nextBrand = defaultCatalogBrand(),
       nextBrief = preset
         ? christmasSampleBrief(nextBrand)
         : freshBrief(nextBrand);
@@ -611,10 +656,18 @@ export default function StudioApp() {
   }
   const tab = route.tab || "family";
   const visibleAssets =
-    campaign?.assets.filter(
-      (a) =>
-        family === "all" || a.familyId === family || a.familyId === "campaign",
-    ) ?? [];
+    campaign?.assets
+      .filter(
+        (a) =>
+          family === "all" ||
+          a.familyId === family ||
+          a.familyId === "campaign",
+      )
+      .sort(
+        (a, b) =>
+          Number(b.placementId === "website-desktop") -
+          Number(a.placementId === "website-desktop"),
+      ) ?? [];
   if (locked)
     return (
       <div className="studio locked-page">
@@ -627,6 +680,26 @@ export default function StudioApp() {
         <button className="button primary" onClick={() => location.reload()}>
           Retry workspace access
         </button>
+        {storageFailed && (
+          <>
+            <p>
+              Existing saved work has not been changed. You can also compose in
+              a temporary session and download before closing.
+            </p>
+            <button
+              className="button"
+              onClick={() => {
+                storage.useTemporaryWorkspace();
+                setStorageFailed(false);
+                setLocked(false);
+                setError("");
+                setTemporaryWorkspace(true);
+              }}
+            >
+              Use a temporary workspace
+            </button>
+          </>
+        )}
       </div>
     );
   if (!ready)
@@ -640,8 +713,8 @@ export default function StudioApp() {
     <div className="studio">
       <div
         className="studio-shell"
-        aria-hidden={reviewId ? true : undefined}
-        inert={reviewId ? true : undefined}
+        aria-hidden={reviewId || handoffOpen ? true : undefined}
+        inert={reviewId || handoffOpen ? true : undefined}
       >
         <aside className="studio-sidebar">
           <button
@@ -699,11 +772,22 @@ export default function StudioApp() {
               )}
             </div>
             <span className="capability-mode">
-              {modeText(campaign?.mode)} <i />{" "}
-              {saving ? "Saving…" : "Browser-local work"}
+              <span title={modeText(campaign?.mode)}>
+                Demo mode · Photo composition · Simulated publishing
+              </span>
+              <i /> {saving ? "Saving…" : "Browser-local work"}
             </span>
           </header>
           <div className="studio-content" ref={headingRef} tabIndex={-1}>
+            {temporaryWorkspace && (
+              <div className="studio-notice">
+                <p>
+                  Temporary workspace · refresh or closing this tab will discard
+                  this session. Download your approved work first. Previously
+                  saved campaigns remain untouched.
+                </p>
+              </div>
+            )}
             {error && (
               <div className="studio-notice error" role="alert">
                 <p>{error}</p>
@@ -721,16 +805,16 @@ export default function StudioApp() {
                 <section className="home-hero">
                   <div className="home-copy">
                     <span className="eyebrow">
-                      One brief. A coordinated creative family.
+                      Store → products → campaign → handoff
                     </span>
                     <h1>
-                      One campaign idea.
+                      Choose your products.
                       <br />
-                      Creatives built for every placement.
+                      Prepare every placement.
                     </h1>
                     <p>
-                      Turn your brief and brand assets into coordinated ads,
-                      copy, and landing-page content—then review and export.
+                      Build a coordinated campaign from your catalog. Review
+                      each creative, then download or preview a channel handoff.
                     </p>
                     <div className="home-actions">
                       <button
@@ -777,7 +861,7 @@ export default function StudioApp() {
                           <span>{sample.plan.copy.descriptions[0]}</span>
                         </div>
                         <span className="outcome-label">
-                          One product · two directions · purpose-built formats
+                          Two products · two directions · purpose-built formats
                         </span>
                       </>
                     ) : (
@@ -789,13 +873,13 @@ export default function StudioApp() {
                   </div>
                 </section>
                 <section className="home-workflow">
-                  <span>Brief & brand</span>
+                  <span>Store & products</span>
                   <Icon name="arrow" size={17} />
                   <span>Creative plan</span>
                   <Icon name="arrow" size={17} />
                   <span>Placement variants</span>
                   <Icon name="arrow" size={17} />
-                  <span>Review & export</span>
+                  <span>Review & handoff</span>
                 </section>
                 <div className="section-title recent-title">
                   <div>
@@ -1031,6 +1115,19 @@ export default function StudioApp() {
                 </div>
                 {tab === "brief" && (
                   <BriefForm
+                    catalog={
+                      <CatalogPicker
+                        catalogs={state.catalogs ?? [cosmicCatalog()]}
+                        brand={brand}
+                        selectedProductIds={brief.productIds}
+                        onCatalogsChange={(catalogs) =>
+                          engine.saveCatalogs(catalogs)
+                        }
+                        busy={busy}
+                        onSelection={selectCatalogProducts}
+                        onError={setError}
+                      />
+                    }
                     brief={brief}
                     brand={brand}
                     onChange={changeBrief}
@@ -1139,6 +1236,70 @@ export default function StudioApp() {
                           </div>
                           <div>
                             <label>
+                              Creative layout
+                              <select
+                                value={direction.artDirection ?? "scene-led"}
+                                onChange={(e) =>
+                                  changePlan({
+                                    ...plan,
+                                    confirmed: false,
+                                    directions: plan.directions.map((d, i) =>
+                                      i === index
+                                        ? {
+                                            ...d,
+                                            artDirection: e.target.value as
+                                              "scene-led" | "editorial",
+                                          }
+                                        : d,
+                                    ),
+                                  })
+                                }
+                              >
+                                <option value="scene-led">
+                                  Scene-led photography
+                                </option>
+                                <option value="editorial">
+                                  Editorial split
+                                </option>
+                              </select>
+                            </label>
+                            <label>
+                              Family product
+                              <select
+                                value={direction.productIds?.[0] ?? "all"}
+                                onChange={(e) =>
+                                  changePlan({
+                                    ...plan,
+                                    confirmed: false,
+                                    directions: plan.directions.map((d, i) =>
+                                      i === index
+                                        ? {
+                                            ...d,
+                                            productIds:
+                                              e.target.value === "all"
+                                                ? undefined
+                                                : [e.target.value],
+                                          }
+                                        : d,
+                                    ),
+                                  })
+                                }
+                              >
+                                <option value="all">
+                                  All selected products
+                                </option>
+                                {brand.products
+                                  .filter((p) =>
+                                    brief.productIds.includes(p.id),
+                                  )
+                                  .map((p) => (
+                                    <option key={p.id} value={p.id}>
+                                      {p.name} · {p.size}
+                                    </option>
+                                  ))}
+                              </select>
+                            </label>
+                            <label>
                               Direction name
                               <input
                                 value={direction.name}
@@ -1183,34 +1344,39 @@ export default function StudioApp() {
                             <label>
                               Direction palette
                               <div className="palette-editor">
-                                {direction.palette.map((color, colorIndex) => (
-                                  <input
-                                    key={colorIndex}
-                                    type="color"
-                                    aria-label={`Direction ${index + 1} color ${colorIndex + 1}`}
-                                    value={color}
-                                    onChange={(e) =>
-                                      changePlan({
-                                        ...plan,
-                                        confirmed: false,
-                                        directions: plan.directions.map(
-                                          (d, i) =>
-                                            i === index
-                                              ? {
-                                                  ...d,
-                                                  palette: d.palette.map(
-                                                    (c, n) =>
-                                                      n === colorIndex
-                                                        ? e.target.value
-                                                        : c,
-                                                  ),
-                                                }
-                                              : d,
-                                        ),
-                                      })
-                                    }
-                                  />
-                                ))}
+                                {direction.palette.map((color, colorIndex) =>
+                                  (direction.artDirection === "editorial"
+                                    ? [2, 3]
+                                    : [0]
+                                  ).includes(colorIndex) ? (
+                                    <input
+                                      key={colorIndex}
+                                      type="color"
+                                      aria-label={`Direction ${index + 1} ${colorIndex === 0 ? "scene background" : colorIndex === 2 ? "editorial accent" : "paper"}`}
+                                      value={color}
+                                      onChange={(e) =>
+                                        changePlan({
+                                          ...plan,
+                                          confirmed: false,
+                                          directions: plan.directions.map(
+                                            (d, i) =>
+                                              i === index
+                                                ? {
+                                                    ...d,
+                                                    palette: d.palette.map(
+                                                      (c, n) =>
+                                                        n === colorIndex
+                                                          ? e.target.value
+                                                          : c,
+                                                    ),
+                                                  }
+                                                : d,
+                                          ),
+                                        })
+                                      }
+                                    />
+                                  ) : null,
+                                )}
                               </div>
                             </label>
                             <label>
@@ -1227,6 +1393,27 @@ export default function StudioApp() {
                                             ...d,
                                             mood: e.target
                                               .value as typeof d.mood,
+                                            palette:
+                                              e.target.value === "festive"
+                                                ? [
+                                                    "#361b20",
+                                                    "#d3ad81",
+                                                    "#b88b69",
+                                                    "#f8f1e6",
+                                                  ]
+                                                : e.target.value === "cool"
+                                                  ? [
+                                                      "#e6f0ee",
+                                                      "#17463e",
+                                                      "#c9e1d5",
+                                                      "#f7faf5",
+                                                    ]
+                                                  : [
+                                                      "#153c32",
+                                                      "#17483c",
+                                                      "#c8ddce",
+                                                      "#f5f1e8",
+                                                    ],
                                           }
                                         : d,
                                     ),
@@ -1234,13 +1421,13 @@ export default function StudioApp() {
                                 }
                               >
                                 <option value="festive">
-                                  Festive lights composition
+                                  Warm festive palette
                                 </option>
                                 <option value="cool">
-                                  Cool, minimal composition
+                                  Cool daytime palette
                                 </option>
                                 <option value="editorial">
-                                  Editorial composition
+                                  Editorial palette
                                 </option>
                               </select>
                             </label>
@@ -1273,10 +1460,10 @@ export default function StudioApp() {
                                 }
                               >
                                 <option value="product-right">
-                                  Product right · room beside it
+                                  Offset within the photo frame
                                 </option>
                                 <option value="product-center">
-                                  Product centered · room around it
+                                  Centered within the photo frame
                                 </option>
                               </select>
                             </label>
@@ -1629,16 +1816,25 @@ export default function StudioApp() {
                             </button>
                           </div>
                         )}
-                      <div className="asset-grid">
+                      <div
+                        className={`asset-grid ${family === "all" ? "" : "single-family"}`}
+                      >
                         {visibleAssets.map((item) => (
                           <article
-                            className={`asset-card ${item.kind !== "image" ? "text-asset" : ""}`}
+                            className={`asset-card ${item.kind !== "image" ? "text-asset" : ""} ${item.placementId === "website-desktop" ? "hero-asset" : ""}`}
                             key={item.id}
                           >
                             <div className="asset-preview">
                               {studioVersion(item)?.raster ? (
                                 <img
-                                  src={studioVersion(item)!.raster!.dataUrl}
+                                  src={
+                                    studioVersion(item)!.raster!
+                                      .previewDataUrl ??
+                                    studioVersion(item)!.raster!.dataUrl
+                                  }
+                                  loading="lazy"
+                                  width={studioVersion(item)!.raster!.width}
+                                  height={studioVersion(item)!.raster!.height}
                                   alt={item.title}
                                 />
                               ) : (
@@ -1805,7 +2001,15 @@ export default function StudioApp() {
                             onClick={() => void exportPacket()}
                           >
                             <Icon name="download" size={17} />
-                            Export approved portfolio
+                            Download assets
+                          </button>
+                          <button
+                            className="button"
+                            disabled={busy || running || dirty}
+                            ref={handoffTrigger}
+                            onClick={() => setHandoffOpen(true)}
+                          >
+                            Preview channel publishing
                           </button>
                         </div>
                       </div>
@@ -2033,6 +2237,39 @@ export default function StudioApp() {
                             />
                           </label>
                         ))}
+                        {copyEdit.headlines.some(
+                          (text) => studioAdsCharacterCount(text) > 30,
+                        ) && (
+                          <div className="studio-notice">
+                            <p>
+                              A Google short headline exceeds 30 characters.
+                              Review a shorter draft before saving; required
+                              phrases still need to pass their checks.
+                            </p>
+                            <button
+                              className="button"
+                              onClick={() =>
+                                setCopyEdit({
+                                  ...copyEdit,
+                                  headlines: copyEdit.headlines.map(
+                                    (text, i) =>
+                                      studioAdsCharacterCount(text) <= 30
+                                        ? text
+                                        : [
+                                            "Explore the collection",
+                                            "Discover the details",
+                                            "A moment for you",
+                                            "Meet the collection",
+                                            "Find your next favorite",
+                                          ][i % 5],
+                                  ),
+                                })
+                              }
+                            >
+                              Suggest shorter headlines
+                            </button>
+                          </div>
+                        )}
                         <button
                           className="button"
                           disabled={busy || running}
@@ -2102,6 +2339,24 @@ export default function StudioApp() {
                 </details>
                 {asset.kind === "image" && (
                   <>
+                    {version.recipe && (
+                      <VariantEditor
+                        key={version.id}
+                        campaign={campaign}
+                        asset={asset}
+                        version={version}
+                        busy={busy || running || dirty}
+                        onRecompose={(overrides) =>
+                          void action(() =>
+                            engine.recomposeAsset(
+                              campaign.id,
+                              asset.id,
+                              overrides,
+                            ),
+                          )
+                        }
+                      />
+                    )}
                     <label>
                       Request a specific revision
                       <textarea
@@ -2169,6 +2424,14 @@ export default function StudioApp() {
             </footer>
           </div>
         </div>
+      )}
+      {handoffOpen && campaign && (
+        <ChannelHandoff
+          campaign={campaign}
+          onCreate={(selection) => engine.addHandoff(campaign.id, selection)}
+          onClose={() => setHandoffOpen(false)}
+          returnFocus={handoffTrigger.current}
+        />
       )}
       {toast && (
         <div className="studio-toast" role="status">

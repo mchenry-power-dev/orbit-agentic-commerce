@@ -14,6 +14,7 @@ export interface CompositionLayout {
   cta: Rect;
   photo: Rect;
   centered: boolean;
+  artDirection: "scene-led" | "editorial";
   /** A design reserve, not a checked platform template or policy approval. */
   storyReserve?: {
     top: number;
@@ -86,7 +87,9 @@ export function validateCompositionRecipe(recipe: CompositionRecipe): void {
     );
   if (
     !["festive", "cool", "editorial"].includes(recipe.mood) ||
-    !["product-right", "product-center"].includes(recipe.composition)
+    !["product-right", "product-center"].includes(recipe.composition) ||
+    (recipe.artDirection !== undefined &&
+      !["scene-led", "editorial"].includes(recipe.artDirection))
   )
     fail("STYLE", "Choose a supported composition mood and framing.");
   if (
@@ -121,14 +124,14 @@ export function containPhoto(
     );
   const scale = Math.min(bounds.width / width, bounds.height / height);
   return {
-    x: bounds.x + (bounds.width - width * scale) / 2,
-    y: bounds.y + (bounds.height - height * scale) / 2,
+    x: Math.max(bounds.x, bounds.x + (bounds.width - width * scale) / 2),
+    y: Math.max(bounds.y, bounds.y + (bounds.height - height * scale) / 2),
     width: width * scale,
     height: height * scale,
   };
 }
 
-/** Purposeful aspect-specific layout; the same family keeps its framing and palette. */
+/** Aspect-specific art direction. Protected photographs and copy occupy separate areas. */
 export function compositionLayout(
   recipe: CompositionRecipe,
 ): CompositionLayout {
@@ -140,88 +143,119 @@ export function compositionLayout(
     height: height * recipe.height,
   });
   const centered = recipe.composition === "product-center";
+  const artDirection =
+    recipe.artDirection || (centered ? "editorial" : "scene-led");
+  const editorial = artDirection === "editorial";
   const ratio = recipe.width / recipe.height;
   let layout: CompositionLayout;
   if (ratio >= 1.35) {
-    layout = centered
+    layout = editorial
       ? {
           centered,
-          brand: rect(0.05, 0.065, 0.29, 0.075),
-          headline: rect(0.05, 0.2, 0.29, 0.32),
-          body: rect(0.05, 0.56, 0.28, 0.16),
-          cta: rect(0.05, 0.8, 0.27, 0.09),
-          photo: rect(0.36, 0.1, 0.49, 0.8),
+          artDirection,
+          brand: rect(0.56, 0.09, 0.38, 0.055),
+          headline: rect(0.56, 0.22, 0.38, 0.35),
+          body: rect(0.56, 0.64, 0.36, 0.15),
+          cta: rect(0.56, 0.865, 0.28, 0.06),
+          photo: rect(0.025, 0.04, 0.49, 0.92),
         }
       : {
           centered,
-          brand: rect(0.06, 0.065, 0.36, 0.075),
-          headline: rect(0.06, 0.2, 0.36, 0.31),
-          body: rect(0.06, 0.54, 0.36, 0.17),
-          cta: rect(0.06, 0.79, 0.32, 0.09),
-          photo: rect(0.5, 0.1, 0.44, 0.8),
+          artDirection,
+          brand: rect(0.055, 0.1, 0.36, 0.06),
+          headline: rect(0.055, 0.25, 0.365, 0.34),
+          body: rect(0.055, 0.65, 0.34, 0.13),
+          cta: rect(0.055, 0.86, 0.28, 0.07),
+          photo: rect(0.47, 0, 0.53, 1),
         };
   } else if (ratio >= 0.85) {
-    layout = centered
-      ? {
-          centered,
-          brand: rect(0.15, 0.045, 0.7, 0.05),
-          headline: rect(0.1, 0.12, 0.8, 0.12),
-          body: rect(0.14, 0.81, 0.72, 0.075),
-          cta: rect(0.25, 0.915, 0.5, 0.055),
-          photo: rect(0.13, 0.3, 0.74, 0.47),
-        }
-      : {
-          centered,
-          brand: rect(0.07, 0.045, 0.75, 0.05),
-          headline: rect(0.07, 0.12, 0.78, 0.17),
-          body: rect(0.07, 0.31, 0.79, 0.08),
-          cta: rect(0.07, 0.915, 0.5, 0.055),
-          photo: rect(0.25, 0.43, 0.68, 0.44),
-        };
+    layout = {
+      centered,
+      artDirection,
+      brand: rect(0.065, 0.035, 0.87, 0.04),
+      headline: rect(0.065, 0.095, 0.87, 0.12),
+      body: rect(0.065, 0.235, 0.87, 0.055),
+      cta: rect(0.065, 0.94, 0.52, 0.04),
+      photo: editorial
+        ? rect(0.1, 0.325, 0.8, 0.585)
+        : rect(0, 0.315, 1, 0.595),
+    };
   } else {
-    layout = centered
-      ? {
-          centered,
-          brand: rect(0.15, 0.115, 0.7, 0.035),
-          headline: rect(0.1, 0.18, 0.8, 0.1),
-          body: rect(0.13, 0.76, 0.74, 0.06),
-          cta: rect(0.25, 0.845, 0.5, 0.045),
-          photo: rect(0.11, 0.33, 0.78, 0.39),
-        }
-      : {
-          centered,
-          brand: rect(0.1, 0.115, 0.8, 0.035),
-          headline: rect(0.1, 0.18, 0.8, 0.13),
-          body: rect(0.1, 0.765, 0.8, 0.06),
-          cta: rect(0.1, 0.845, 0.66, 0.045),
-          photo: rect(0.24, 0.355, 0.66, 0.37),
-        };
-    if (ratio <= 0.6)
+    if (ratio <= 0.6) {
+      layout = {
+        centered,
+        artDirection,
+        brand: rect(0.075, 0.115, 0.85, 0.025),
+        headline: rect(0.075, 0.165, 0.85, 0.085),
+        body: rect(0.075, 0.8, 0.85, 0.04),
+        cta: rect(0.075, 0.86, 0.55, 0.035),
+        photo: editorial
+          ? rect(0.06, 0.275, 0.88, 0.5)
+          : rect(0, 0.27, 1, 0.51),
+      };
       layout.storyReserve = {
         top: recipe.height * 0.1,
         bottom: recipe.height * 0.1,
         status: "illustrative-manual-check-required",
       };
+    } else
+      layout = editorial
+        ? {
+            centered,
+            artDirection,
+            brand: rect(0.075, 0.035, 0.85, 0.03),
+            headline: rect(0.075, 0.095, 0.85, 0.12),
+            body: rect(0.075, 0.87, 0.85, 0.045),
+            cta: rect(0.075, 0.945, 0.55, 0.035),
+            photo: rect(0.025, 0.235, 0.95, 0.61),
+          }
+        : {
+            centered,
+            artDirection,
+            brand: rect(0.075, 0.7, 0.85, 0.025),
+            headline: rect(0.075, 0.75, 0.85, 0.09),
+            body: rect(0.075, 0.855, 0.85, 0.055),
+            cta: rect(0.075, 0.94, 0.55, 0.035),
+            photo: rect(0, 0, 1, 0.67),
+          };
   }
-  // Text-free ad artwork gets a larger protected photo rather than vacant copy
-  // slots. Framing remains distinct; external ad copy stays outside this image.
+  // Ads can be text-free: let the photograph carry the frame. Wide placements
+  // use a soft-focus background derived only from the same original photograph.
   if (!recipe.textOverlay) {
     if (ratio >= 1.35)
-      layout.photo = centered
-        ? rect(0.18, 0.1, 0.64, 0.8)
-        : rect(0.48, 0.1, 0.48, 0.8);
+      layout.photo = editorial
+        ? rect(0.03, 0.065, 0.94, 0.87)
+        : centered
+          ? rect(0, 0, 1, 1)
+          : rect(0.34, 0, 0.66, 1);
     else if (ratio >= 0.85)
-      layout.photo = centered
-        ? rect(0.15, 0.15, 0.7, 0.7)
-        : rect(0.25, 0.22, 0.68, 0.68);
+      layout.photo = editorial
+        ? rect(0.06, 0.04, 0.88, 0.88)
+        : centered
+          ? rect(0, 0, 1, 1)
+          : rect(0.02, 0, 0.98, 1);
     else
-      layout.photo = centered
-        ? rect(0.1, 0.2, 0.8, 0.6)
-        : rect(0.2, 0.23, 0.72, 0.56);
+      layout.photo = editorial
+        ? rect(0.04, 0.055, 0.92, 0.89)
+        : centered
+          ? rect(0, 0, 1, 1)
+          : rect(0.02, 0, 0.98, 1);
   }
-  // The spacing preference enlarges the frame without changing product identity.
-  const insetX = layout.photo.width * recipe.spacing * 0.4;
-  const insetY = layout.photo.height * recipe.spacing * 0.4;
+  // Framing remains a real control within either art direction. A centered
+  // scene gets a small, even breathing margin; editorial right framing shifts
+  // the intact photo inside its separate photographic column.
+  if (recipe.artDirection && recipe.textOverlay && centered && !editorial) {
+    layout.photo.x += layout.photo.width * 0.025;
+    layout.photo.y += layout.photo.height * 0.025;
+    layout.photo.width *= 0.95;
+    layout.photo.height *= 0.95;
+  } else if (recipe.artDirection && !centered && editorial) {
+    layout.photo.x += layout.photo.width * 0.02;
+    layout.photo.width *= 0.98;
+  }
+  // Keep spacing useful without reducing a product scene to a tiny thumbnail.
+  const insetX = layout.photo.width * recipe.spacing * 0.06;
+  const insetY = layout.photo.height * recipe.spacing * 0.06;
   layout.photo = {
     x: layout.photo.x + insetX,
     y: layout.photo.y + insetY,
@@ -551,16 +585,18 @@ function textBlock(
   weight: number,
   color: string,
   centered = false,
+  family = "Arial, sans-serif",
+  leading = 1.2,
 ) {
   if (!text.trim()) return;
   const minimum = Math.max(4, size * 0.55);
   let lines: string[] = [];
   let fontSize = size;
   for (; fontSize >= minimum; fontSize -= Math.max(1, size * 0.025)) {
-    ctx.font = `${weight} ${fontSize}px Arial, sans-serif`;
+    ctx.font = `${weight} ${fontSize}px ${family}`;
     lines = wrapText(text, box.width, (value) => ctx.measureText(value).width);
     if (
-      lines.length * fontSize * 1.2 <= box.height &&
+      lines.length * fontSize * leading <= box.height &&
       lines.every((line) => ctx.measureText(line).width <= box.width)
     )
       break;
@@ -577,7 +613,7 @@ function textBlock(
     ctx.fillText(
       line,
       centered ? box.x + box.width / 2 : box.x,
-      box.y + i * fontSize * 1.2,
+      box.y + i * fontSize * leading,
     ),
   );
 }
@@ -589,108 +625,75 @@ function dark(color: string) {
   return rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722 < 0.32;
 }
 
+/** A soft-focus extension of the photo's own upper scene, never a new product or scene. */
+function photographicSurround(
+  ctx: CanvasRenderingContext2D,
+  photo: HTMLImageElement,
+  width: number,
+  height: number,
+  opacity: number,
+) {
+  const sourceHeight = photo.naturalHeight * 0.18;
+  const bleed = Math.min(width, height) * 0.1;
+  const scale = Math.max(
+    (width + bleed * 2) / photo.naturalWidth,
+    (height + bleed * 2) / sourceHeight,
+  );
+  const drawWidth = photo.naturalWidth * scale,
+    drawHeight = sourceHeight * scale;
+  ctx.save();
+  ctx.globalAlpha = opacity;
+  ctx.filter = `blur(${Math.min(width, height) * 0.045}px)`;
+  ctx.drawImage(
+    photo,
+    0,
+    0,
+    photo.naturalWidth,
+    sourceHeight,
+    (width - drawWidth) / 2,
+    (height - drawHeight) / 2,
+    drawWidth,
+    drawHeight,
+  );
+  ctx.restore();
+}
+
 function background(
   ctx: CanvasRenderingContext2D,
   recipe: CompositionRecipe,
   layout: CompositionLayout,
+  photo: HTMLImageElement,
 ) {
   const w = recipe.width,
-    h = recipe.height,
-    unit = Math.min(w, h);
-  const defaultPalette =
-    recipe.mood === "festive"
-      ? ["#421218", "#f4bf54", "#116348", "#fff2d5"]
+    h = recipe.height;
+  const editorial = layout.artDirection === "editorial";
+  const palette = recipe.palette.length
+    ? recipe.palette
+    : recipe.mood === "festive"
+      ? ["#361b20", "#d3ad81", "#18392d", "#f8f1e6"]
       : recipe.mood === "cool"
-        ? ["#e5f4f7", "#164451", "#ffffff", "#60b7cb"]
-        : ["#f4f1e9", "#173a42", "#cadacf", "#ffffff"];
-  const palette = recipe.palette.length ? recipe.palette : defaultPalette;
-  const base = palette[0],
-    accent = palette[2] || palette[1] || defaultPalette[2];
+        ? ["#e6f0ee", "#17463e", "#c9e1d5", "#f7faf5"]
+        : ["#153c32", "#17483c", "#c8ddce", "#f5f1e8"];
+  const base = editorial ? palette[3] || "#f5f1e8" : palette[0];
+  const ink = dark(base) ? "#fff9ef" : "#17392f";
   ctx.fillStyle = base;
   ctx.fillRect(0, 0, w, h);
-  ctx.save();
-  ctx.globalAlpha = 0.28;
-  ctx.fillStyle = accent;
-  if (layout.centered) {
-    ctx.beginPath();
-    ctx.ellipse(
-      layout.photo.x + layout.photo.width / 2,
-      layout.photo.y + layout.photo.height / 2,
-      layout.photo.width * 0.64,
-      layout.photo.height * 0.67,
-      0,
-      0,
-      Math.PI * 2,
-    );
-    ctx.fill();
-  } else {
-    ctx.beginPath();
-    ctx.moveTo(w * 0.44, h);
-    ctx.lineTo(w, h * 0.25);
-    ctx.lineTo(w, h);
-    ctx.closePath();
-    ctx.fill();
-  }
-  ctx.restore();
-  if (recipe.mood === "festive") {
-    // Deliberately drawn light accents, not a generated photographic scene.
-    const y = layout.storyReserve ? layout.storyReserve.top * 0.58 : h * 0.045;
-    ctx.strokeStyle = "#b4893d";
-    ctx.lineWidth = unit * 0.002;
-    ctx.beginPath();
-    ctx.moveTo(-w * 0.02, y);
-    ctx.quadraticCurveTo(w * 0.5, y + unit * 0.06, w * 1.02, y);
-    ctx.stroke();
-    for (let i = 0; i < 14; i++) {
-      const x = ((i + 0.5) * w) / 14,
-        t = x / w,
-        by = y + unit * 0.12 * t * (1 - t);
-      const radius = unit * (0.0045 + (i % 3) * 0.001);
-      const color = ["#f4bf54", "#ef6258", "#53ba84"][i % 3];
-      ctx.save();
-      ctx.fillStyle = color;
-      ctx.shadowColor = color;
-      ctx.shadowBlur = radius * 4;
-      ctx.beginPath();
-      ctx.arc(x, by + radius, radius, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
+  // Photographic material supports the intact foreground image. No drawn lights,
+  // ornaments, vector shapes, made-up objects, or rectangular photo shadows.
+  if (!editorial)
+    photographicSurround(ctx, photo, w, h, recipe.textOverlay ? 0.17 : 0.68);
+  if (editorial) {
+    ctx.fillStyle = palette[2] || "#c8ddce";
+    const strip = Math.min(w, h) * 0.012;
+    ctx.fillRect(0, 0, w, strip);
+    if (recipe.textOverlay && w / h >= 1.35) {
+      ctx.fillStyle = ink;
+      ctx.globalAlpha = 0.24;
+      ctx.fillRect(w * 0.56, h * 0.175, w * 0.38, Math.max(1, h * 0.0012));
+      ctx.globalAlpha = 1;
     }
-    ctx.strokeStyle = "#f4bf54";
-    ctx.lineWidth = unit * 0.0018;
-    ctx.strokeRect(w * 0.025, h * 0.025, w * 0.95, h * 0.95);
-  } else if (recipe.mood === "cool") {
-    ctx.save();
-    ctx.globalAlpha = 0.35;
-    ctx.strokeStyle = "#60b7cb";
-    ctx.lineWidth = unit * 0.002;
-    for (let i = 0; i < 3; i++) {
-      ctx.beginPath();
-      ctx.ellipse(
-        w * 0.94,
-        h * 0.82,
-        w * (0.36 + i * 0.07),
-        h * (0.32 + i * 0.05),
-        -0.25,
-        Math.PI,
-        Math.PI * 2,
-      );
-      ctx.stroke();
-    }
-    ctx.restore();
-  } else {
-    ctx.save();
-    ctx.globalAlpha = 0.35;
-    ctx.strokeStyle = palette[1] || defaultPalette[1];
-    ctx.lineWidth = unit * 0.0015;
-    ctx.strokeRect(w * 0.025, h * 0.025, w * 0.95, h * 0.95);
-    ctx.restore();
   }
-  return {
-    ink: dark(base) ? "#fff8e8" : "#112a31",
-    ctaFill: dark(base) ? "#fff2d5" : "#173a42",
-    ctaInk: dark(base) ? "#173a42" : "#fff8e8",
-  };
+  return { ink, surface: base, ctaInk: ink };
 }
 
 /** Honest local photo composition; original photos stay protected full-frame layers. */
@@ -728,6 +731,9 @@ export async function renderComposition(
       window.location.href,
       import.meta.env.BASE_URL,
     );
+  // Export and review use this same renderer after local fonts have settled.
+  if (document.fonts) await document.fonts.ready;
+  abort(signal);
   const photos: HTMLImageElement[] = [];
   for (const source of recipe.productPhotos) {
     photos.push(await loadPhoto(source, signal));
@@ -747,7 +753,7 @@ export async function renderComposition(
       "This browser could not create a canvas. Try a supported browser and retry.",
     );
   const layout = compositionLayout(recipe),
-    colors = background(ctx, recipe, layout);
+    colors = background(ctx, recipe, layout, photos[0]);
   if (scene) {
     const frame = containPhoto(scene.naturalWidth, scene.naturalHeight, {
       x: 0,
@@ -758,7 +764,7 @@ export async function renderComposition(
     ctx.drawImage(scene, frame.x, frame.y, frame.width, frame.height);
     // An opaque copy panel keeps text readable without touching protected photos.
     if (recipe.textOverlay) {
-      ctx.fillStyle = recipe.palette[0] || "#f4f1e9";
+      ctx.fillStyle = colors.surface;
       ctx.fillRect(
         layout.headline.x - recipe.width * 0.012,
         layout.brand.y - recipe.height * 0.012,
@@ -777,69 +783,60 @@ export async function renderComposition(
       photo.naturalHeight,
       slots[i],
     );
-    ctx.save();
-    ctx.fillStyle = "#ffffff";
-    ctx.shadowColor = "#00000044";
-    ctx.shadowBlur = Math.min(recipe.width, recipe.height) * 0.025;
-    ctx.shadowOffsetY = recipe.height * 0.01;
-    ctx.fillRect(frame.x, frame.y, frame.width, frame.height);
-    ctx.restore();
     ctx.drawImage(photo, frame.x, frame.y, frame.width, frame.height);
   });
   if (recipe.textOverlay) {
     const unit = Math.min(recipe.width, recipe.height);
+    const editorial = layout.artDirection === "editorial";
+    const wide = recipe.width / recipe.height >= 1.35;
+    const textCentered = layout.centered && !wide && !editorial;
     textBlock(
       ctx,
       brandName.toLocaleUpperCase(),
       layout.brand,
       unit * 0.021,
-      700,
+      500,
       colors.ink,
-      layout.centered && recipe.width / recipe.height < 1.35,
+      textCentered,
     );
     textBlock(
       ctx,
       recipe.headline,
       layout.headline,
-      unit * 0.073,
-      700,
+      unit * (wide ? 0.093 : 0.082),
+      editorial ? 600 : 400,
       colors.ink,
-      layout.centered && recipe.width / recipe.height < 1.35,
+      textCentered,
+      editorial ? "Arial, sans-serif" : "Georgia, serif",
+      1.06,
     );
     textBlock(
       ctx,
       recipe.body,
       layout.body,
-      unit * 0.027,
+      unit * 0.025,
       400,
       colors.ink,
-      layout.centered && recipe.width / recipe.height < 1.35,
+      textCentered,
+      "Arial, sans-serif",
+      1.25,
     );
     if (recipe.cta.trim()) {
-      ctx.fillStyle = colors.ctaFill;
-      ctx.beginPath();
-      ctx.roundRect(
-        layout.cta.x,
-        layout.cta.y,
-        layout.cta.width,
-        layout.cta.height,
-        unit * 0.008,
-      );
-      ctx.fill();
-      const padding = layout.cta.height * 0.2;
       textBlock(
         ctx,
         recipe.cta,
-        {
-          x: layout.cta.x + padding,
-          y: layout.cta.y + padding,
-          width: layout.cta.width - padding * 2,
-          height: layout.cta.height - padding * 2,
-        },
-        Math.min(unit * 0.026, layout.cta.height * 0.42),
-        700,
+        layout.cta,
+        Math.min(unit * 0.023, layout.cta.height * 0.64),
+        600,
         colors.ctaInk,
-        true,
+        textCentered,
+      );
+      ctx.fillStyle = colors.ink;
+      ctx.fillRect(
+        layout.cta.x,
+        layout.cta.y + layout.cta.height * 0.9,
+        Math.min(layout.cta.width, unit * 0.18),
+        Math.max(1, unit * 0.0015),
       );
     }
   }
@@ -863,6 +860,19 @@ export async function renderComposition(
       "OUTPUT_DIMENSIONS",
       "The browser's encoded raster does not match the requested dimensions or type. Recreate the asset in a supported browser.",
     );
+  // Thumbnails resample this exact finished canvas, never a second layout.
+  const preview = document.createElement("canvas");
+  const previewScale = Math.min(1, 768 / Math.max(canvas.width, canvas.height));
+  preview.width = Math.round(canvas.width * previewScale);
+  preview.height = Math.round(canvas.height * previewScale);
+  const previewContext = preview.getContext("2d");
+  if (previewContext) {
+    previewContext.imageSmoothingQuality = "high";
+    previewContext.drawImage(canvas, 0, 0, preview.width, preview.height);
+    raster.previewDataUrl = preview.toDataURL("image/jpeg", 0.78);
+  }
+  // Release backing stores promptly; placement runs are sequential.
+  canvas.width = canvas.height = preview.width = preview.height = 1;
   abort(signal);
   return raster;
 }

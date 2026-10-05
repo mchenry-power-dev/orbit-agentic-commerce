@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "your-store",
+  "name": "Your store",
+  "url": "https://example.com/",
+  "snapshotAt": "2026-10-05",
+  "completeness": "complete",
+  "products": [
+    {
+      "id": "your-product",
+      "title": "Your product",
+      "description": "Replace this example with your factual public product description.",
+      "facts": ["Replace with a fact you can confirm"],
+      "url": "https://example.com/products/your-product",
+      "defaultVariantId": "standard",
+      "variants": [
+        {
+          "id": "standard",
+          "title": "Standard",
+          "options": { "size": "Standard" }
+        }
+      ],
+      "images": []
+    }
+  ]
+}

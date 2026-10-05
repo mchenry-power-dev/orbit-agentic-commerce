@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import type { StudioBrand } from "../domain/studio";
+import { withProductPhotoOverride } from "../domain/catalog";
 import { readOwnedPhoto } from "../providers/uploads";
 import { photoUrl } from "./StudioForms";
 
@@ -82,7 +83,11 @@ export default function BrandLibrary({
         ...current,
         products: current.products.map((p) =>
           p.id === productId
-            ? { ...p, photo, sourceIds: [...p.sourceIds, id], confirmed: false }
+            ? {
+                ...withProductPhotoOverride(p, photo),
+                sourceIds: [...p.sourceIds, id],
+                confirmed: false,
+              }
             : p,
         ),
         sources: [
@@ -335,8 +340,10 @@ export default function BrandLibrary({
                           products: brand.products.map((p) =>
                             p.id === product.id
                               ? {
-                                  ...p,
-                                  photo: source?.image ?? "",
+                                  ...withProductPhotoOverride(
+                                    p,
+                                    source?.image ?? "",
+                                  ),
                                   sourceIds: [
                                     ...p.sourceIds.filter(
                                       (id) =>
@@ -463,14 +470,15 @@ export default function BrandLibrary({
                       products: brand.products.map((p) =>
                         p.sourceIds.includes(source.id)
                           ? {
-                              ...p,
-                              sourceIds: p.sourceIds.filter(
-                                (id) => id !== source.id,
-                              ),
-                              photo:
+                              ...withProductPhotoOverride(
+                                p,
                                 source.image && p.photo === source.image
                                   ? ""
                                   : p.photo,
+                              ),
+                              sourceIds: p.sourceIds.filter(
+                                (id) => id !== source.id,
+                              ),
                               confirmed: false,
                             }
                           : p,

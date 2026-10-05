@@ -53,43 +53,47 @@ describe("protected photo composition geometry", () => {
   ])(
     "keeps all content inside %ix%i and overlay text clear of photos",
     (width, height) => {
-      for (const composition of ["product-right", "product-center"] as const) {
-        const layout = compositionLayout(
-          recipe({ width, height, composition }),
-        );
-        for (const box of [
-          layout.brand,
-          layout.headline,
-          layout.body,
-          layout.cta,
-          layout.photo,
-        ]) {
-          expect(box.x).toBeGreaterThanOrEqual(0);
-          expect(box.y).toBeGreaterThanOrEqual(0);
-          expect(box.x + box.width).toBeLessThanOrEqual(width);
-          expect(box.y + box.height).toBeLessThanOrEqual(height);
-        }
-        for (const box of [
-          layout.brand,
-          layout.headline,
-          layout.body,
-          layout.cta,
-        ])
-          expect(overlaps(box, layout.photo)).toBe(false);
-        for (const count of [1, 2, 3, 4])
-          for (const slot of photoSlots(layout.photo, count)) {
-            const photo = containPhoto(1200, 800, slot);
-            expect(photo.width / photo.height).toBeCloseTo(1.5, 10);
-            expect(photo.x).toBeGreaterThanOrEqual(slot.x);
-            expect(photo.y).toBeGreaterThanOrEqual(slot.y);
-            expect(photo.x + photo.width).toBeLessThanOrEqual(
-              slot.x + slot.width + 1e-8,
-            );
-            expect(photo.y + photo.height).toBeLessThanOrEqual(
-              slot.y + slot.height + 1e-8,
-            );
+      for (const artDirection of ["scene-led", "editorial"] as const)
+        for (const composition of [
+          "product-right",
+          "product-center",
+        ] as const) {
+          const layout = compositionLayout(
+            recipe({ width, height, composition, artDirection }),
+          );
+          for (const box of [
+            layout.brand,
+            layout.headline,
+            layout.body,
+            layout.cta,
+            layout.photo,
+          ]) {
+            expect(box.x).toBeGreaterThanOrEqual(0);
+            expect(box.y).toBeGreaterThanOrEqual(0);
+            expect(box.x + box.width).toBeLessThanOrEqual(width);
+            expect(box.y + box.height).toBeLessThanOrEqual(height);
           }
-      }
+          for (const box of [
+            layout.brand,
+            layout.headline,
+            layout.body,
+            layout.cta,
+          ])
+            expect(overlaps(box, layout.photo)).toBe(false);
+          for (const count of [1, 2, 3, 4])
+            for (const slot of photoSlots(layout.photo, count)) {
+              const photo = containPhoto(1200, 800, slot);
+              expect(photo.width / photo.height).toBeCloseTo(1.5, 10);
+              expect(photo.x).toBeGreaterThanOrEqual(slot.x);
+              expect(photo.y).toBeGreaterThanOrEqual(slot.y);
+              expect(photo.x + photo.width).toBeLessThanOrEqual(
+                slot.x + slot.width + 1e-8,
+              );
+              expect(photo.y + photo.height).toBeLessThanOrEqual(
+                slot.y + slot.height + 1e-8,
+              );
+            }
+        }
     },
   );
   it("has distinct family framing and labels portrait design reserves honestly", () => {
@@ -117,6 +121,45 @@ describe("protected photo composition geometry", () => {
     );
     expect(center.photo.x + center.photo.width / 2).toBeCloseTo(540);
     expect(textFree.photo.x + textFree.photo.width / 2).toBeGreaterThan(540);
+  });
+  it("adapts the reading order across art directions and wide/mobile heroes", () => {
+    const warmWide = compositionLayout(
+      recipe({ width: 1600, height: 900, artDirection: "scene-led" }),
+    );
+    const editWide = compositionLayout(
+      recipe({ width: 1600, height: 900, artDirection: "editorial" }),
+    );
+    expect(warmWide.photo.x).toBeGreaterThan(
+      warmWide.headline.x + warmWide.headline.width,
+    );
+    expect(editWide.photo.x + editWide.photo.width).toBeLessThan(
+      editWide.headline.x,
+    );
+    const warmMobile = compositionLayout(
+      recipe({ width: 900, height: 1200, artDirection: "scene-led" }),
+    );
+    const editMobile = compositionLayout(
+      recipe({ width: 900, height: 1200, artDirection: "editorial" }),
+    );
+    expect(warmMobile.photo.y + warmMobile.photo.height).toBeLessThan(
+      warmMobile.headline.y,
+    );
+    expect(editMobile.headline.y + editMobile.headline.height).toBeLessThan(
+      editMobile.photo.y,
+    );
+    for (const artDirection of ["scene-led", "editorial"] as const) {
+      const photo = compositionLayout(
+        recipe({ artDirection, textOverlay: false, spacing: 0.12 }),
+      ).photo;
+      expect(photo.width * photo.height).toBeGreaterThan(1080 * 1080 * 0.73);
+      const right = compositionLayout(
+        recipe({ artDirection, composition: "product-right" }),
+      ).photo;
+      const center = compositionLayout(
+        recipe({ artDirection, composition: "product-center" }),
+      ).photo;
+      expect(right).not.toEqual(center);
+    }
   });
   it("rejects excessive dimensions, unsupported palette, and mismatched protected products", () => {
     expect(() => validateCompositionRecipe(recipe({ width: 5000 }))).toThrow(

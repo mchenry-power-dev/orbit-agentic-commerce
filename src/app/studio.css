@@ -1659,3 +1659,50 @@
     animation: none !important;
   }
 }
+
+/* Lead with both full hero directions; keep the existing placement-card grid. */
+.studio .asset-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+.studio .asset-card {
+  grid-column: span 2;
+}
+.studio .asset-card.hero-asset {
+  grid-column: span 3;
+}
+.studio .asset-grid.single-family .hero-asset {
+  grid-column: span 6;
+}
+.studio .hero-asset .asset-preview {
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+.studio .hero-asset .asset-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.studio .variant-fields {
+  border: 0;
+  padding: 0;
+  margin: 12px 0 0;
+  min-width: 0;
+}
+.studio .variant-fields:disabled {
+  opacity: 0.65;
+}
+@media (max-width: 1100px) {
+  .studio .asset-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .studio .asset-card,
+  .studio .asset-card.hero-asset,
+  .studio .asset-grid.single-family .hero-asset {
+    grid-column: span 1;
+  }
+}
+@media (max-width: 680px) {
+  .studio .asset-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

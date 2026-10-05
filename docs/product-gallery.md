@@ -1,96 +1,52 @@
-# No-key V2 gallery
+# Orbit Studio gallery
 
-These are screenshots of the real, locally running V2 production build, captured on **2026-10-03**. Cosmic Cat photos are owner-authorized public references. The Christmas example is prebuilt local composition; the summer campaign was newly composed through the app. No model calls or advertising-account connections are shown. Merchant decisions in the review/landing captures are acceptance-test interactions, not commercial or platform approvals.
+Actual application captures from the quality enhancement, **2026-10-05**. The finished Cosmic Cat campaign is prepared local photo composition. Product selection, approval and handoff states shown here come from acceptance interactions, not commercial outcomes or platform approval. The [validation record](testing-and-evaluation.md) separates local, browser and hosted checks.
 
-Try the [public Pages demo](https://mchenry-power-dev.github.io/orbit-agentic-commerce/). These actual V2 production captures show the no-key creative workflow; they do not represent a live generative service. Website import is local-service-only, and live AI/provider integrations are deferred. See the [recorded release checks](testing-and-evaluation.md) for hosted verification.
+## Two photographic directions
 
-## Start with an outcome
+![Actual Orbit creative family showing Candy Cane and Solar Surge across selected placements](images/quality04-family.png)
 
-![Orbit Studio V2 home with the Cosmic Cat Christmas creative preview, campaign copy and mobile hero](images/v2-01-home.png)
+**Candy Cane · Christmas warmth** uses the original festive photograph, source-derived soft-focus surroundings and restrained serif type. **Solar Surge · The coffee journal** uses the intact woodland scene, paper tones and confident editorial type. Both keep the package label visible. Desktop/mobile hierarchy changes with the placement; the photo is never stretched or repainted.
 
-_No-key V2 · Authorized Cosmic Cat photos · Prebuilt local composition · No model calls_
+The example contains **15 assets, including 12 native JPEG variants, with zero initial approvals**. Google imagery is text-free by default; website heroes include copy. [Generation provenance](../public/samples/cosmic-christmas.PROVENANCE.json) identifies the source, recipe, encoding and thumbnail treatment. Prepared samples are distinct from new compositions visitors create.
 
-Home shows the coordinated outcome before requesting a brief. Exploring the example creates a separate browser-local campaign with no copied approvals.
+## Understand the outcome first
+
+![Actual Orbit Home with a finished photographic campaign, coordinated copy and mobile hero](images/quality04-home.png)
+
+Home shows the result before asking for a brief. Exploring it creates a browser-local campaign without copying approvals. The default catalog is a dated public snapshot, not a synced production store.
+
+## Choose products and variants
+
+![Actual store catalog with product photographs, search, variants and factual source context](images/quality04-catalog.png)
+
+Search the curated Cosmic Cat catalog, select a variant and inspect its approved image. Source facts populate the campaign. Variants without a matching photograph say so; a store logo cannot substitute for a product photo. Browsing or refreshing a catalog does not silently rewrite an existing campaign.
+
+## Review the destination handoff
+
+![Actual channel publishing preview with a demo destination, approved-version mapping and readiness findings](images/quality04-handoff.png)
+
+The focused workflow maps approved versions to a sample target and creates a local review record where complete. It sends nothing to an ad platform. Meta's mapping is conceptual; TikTok requires finished video. Downloads with missing requirements remain explicitly incomplete. [Mapping details](channel-handoff.md).
+
+## Keep review usable on a phone
+
+![Actual phone-width review with the full photographic output and visible revision and approval controls](images/quality04-mobile-review.png)
+
+The exact export raster appears in review. Small gallery images are bounded thumbnails of that same finished canvas. Per-variant changes affect the actual output and create a new review requirement. Phone captures and emulated browser checks do not establish physical-device testing.
+
+## Native output inspection
+
+Before scaling the design, both directions were rendered on **both Candy Cane and Solar Surge** across square, landscape, portrait, story and desktop/mobile hero formats. All **24 prototype JPEGs** and the **12 sample JPEGs** decoded successfully. Full-size visual review checked product prominence, line breaks, preserved package labels, aspect ratio, photo edges and placement hierarchy. These were real renderer outputs, not independent UI mockups.
+
+The previous V2 used small photo boxes, drawn light strings and decorative borders. The revised output gives the original photography the dominant area and separates its typography from the protected frame. Pixel/source and ZIP checks complement this subjective visual review; local format checks do not certify advertising quality or policy approval.
 
 <details>
-<summary>Brief, brand references and editable interpretation</summary>
+<summary>Earlier release captures</summary>
 
-![V2 campaign brief showing Solar Surge, selected brand references, campaign description and editable creative directions](images/v2-02-brief.png)
+[Previous V2 Home](images/v2-01-home.png) · [Previous V2 family](images/v2-03-family.png) · [Preserved V1 brief](images/01-brief.png) · [Preserved V1 portfolio](images/02-portfolio.png)
 
-_No-key V2 · Authorized Cosmic Cat photos · Prebuilt local composition · No model calls_
-
-The brief retains products, references, campaign intent and selected placements. The interpretation exposes two directions and local-mode limits for review before creation.
+These historical screenshots document earlier implementations. V1 uses fictional merchant data and original SVG concepts; the current experience uses approved Cosmic Cat photography and real raster variants.
 
 </details>
 
-<details>
-<summary>Complete Christmas creative family and selected placements</summary>
-
-![V2 Christmas family showing two directions across Google, Meta and website targets, plus copy, landing content and handoff](images/v2-03-family.png)
-
-_No-key V2 · Authorized Cosmic Cat photos · Prebuilt local composition · No model calls_
-
-Twelve native JPEG variants and three content assets form the 15-item example. The original product-photo frame remains intact. Google imagery keeps copy separate; website heroes include placement-specific overlays. The sample begins with all versions unapproved. Meta is explicitly Not checked; website targets are design choices.
-
-</details>
-
-<details>
-<summary>Exact asset review, provenance and targeted revision</summary>
-
-![V2 asset-review dialog with complete desktop hero, measured findings, source fidelity, revision note and visible approval actions](images/v2-04-review.png)
-
-_No-key V2 · Authorized Cosmic Cat photos · Prebuilt local composition · No model calls_
-
-Review exposes the actual version, placement finding, source fidelity and revision controls. Local revisions support spacing or centered framing; other supported composition changes use plan controls. Arbitrary scene generation is deferred. Approval applies to this exact current version.
-
-</details>
-
-<details>
-<summary>Desktop landing preview and reviewed content</summary>
-
-![V2 desktop landing preview using the intended full-width campaign hero, confirmed Solar Surge record and coordinated page sections](images/v2-05-landing.png)
-
-_No-key V2 · Authorized Cosmic Cat photos · Prebuilt local composition · No model calls_
-
-The intended desktop hero retains its complete composition. The preview carries actual landing copy and the pictured product facts. Its reviewed state comes from intentional acceptance-test decisions. Downloading a landing brief or approved packet does not publish a storefront.
-
-</details>
-
-<details>
-<summary>Contrasting summer composition with the same protected product photo</summary>
-
-![V2 newly composed summer campaign with cool colors, two framing directions and desktop/mobile website variants](images/v2-06-contrast.png)
-
-_No-key V2 · Authorized Cosmic Cat photos · New local composition · No model calls_
-
-A cool, minimal, no-holiday brief changes the surrounding design and copy while retaining Solar Surge's verified product record and unchanged photo. Only the selected website targets are created. This demonstrates supported bounded cues rather than arbitrary semantic image generation.
-
-</details>
-
-<details>
-<summary>Narrow home, exact review and Mobile-selected landing</summary>
-
-![V2 home at 390 pixels with stacked navigation, campaign outcome and usable primary actions](images/v2-07-narrow-home.png)
-
-![V2 review at 390 pixels with the complete protected composition and visible Reject and Approve footer](images/v2-08-narrow-review.png)
-
-![V2 landing at 390 pixels with Mobile selected, the intended 900 by 1200 hero and stacked page content](images/v2-09-narrow-landing.png)
-
-_No-key V2 · Authorized Cosmic Cat photos · Prebuilt local composition · No model calls_
-
-The narrow workflow keeps navigation and review actions reachable. Selecting Mobile uses the intended portrait hero at its natural aspect ratio, followed by confirmed product details and coordinated sections. These real captures were inspected without horizontal overflow; they do not establish physical-device or accessibility certification.
-
-</details>
-
-<details>
-<summary>Preserved historical V1 screenshots</summary>
-
-[Brief](images/01-brief.png) · [Portfolio](images/02-portfolio.png) · [Landing](images/03-landing.png) · [Focused review](images/04-review.png)
-
-_Working reference demo · Sample data · Simulated providers_
-
-These earlier captures use fictional merchant fixtures and original SVG drafts. They document the preserved V1 reference; they are separate from the V2 raster/photo experience.
-
-</details>
-
-See the [demo guide](demo-guide.md), [architecture](architecture.md), [review lifecycle](workflow-and-domain.md#review-and-revision), [recorded tests](testing-and-evaluation.md) and [placement scope](channel-specs.md).
+[Live demo](https://mchenry-power-dev.github.io/orbit-agentic-commerce/) · [Try three journeys](demo-guide.md) · [Source provenance](brand-provenance.md) · [Recorded validation](testing-and-evaluation.md)

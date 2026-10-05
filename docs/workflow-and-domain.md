@@ -1,11 +1,13 @@
 # Workflow and domain
 
-V2 organizes **campaign → two creative directions → placement variants → exact versions**. The description expresses intent; confirmed brand sources constrain facts. An editable interpretation precedes creation. The finished example is a useful starting point, but copying it does not preapprove any output for the merchant.
+Orbit organizes **store → products → campaign → two creative directions → placement variants → exact versions → local handoff**. The description expresses intent; confirmed brand sources constrain facts. An editable interpretation precedes creation. The finished example is a useful starting point, but copying it does not preapprove any output for the merchant.
 
 ## Records and controls
 
 | Record             | Meaning                                                                                                                     |
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| Catalog selection  | Store-scoped product, variant and image identity plus a retained factual snapshot                                           |
+| Local handoff      | Demo destination/target, exact approved version references, findings and immutable local completion record                  |
 | Brief              | Description, goal, selected products/channels/placements, optional audience/offer/tone/phrases/dates and budget assumptions |
 | Brand source       | Retrieved or visitor-supplied content with role, inclusion, provenance and confirmed product association                    |
 | Creative plan      | Two directions, proposed copy/landing/video concept, conflicts, selected sources and captured preferences                   |
@@ -17,20 +19,24 @@ V2 organizes **campaign → two creative directions → placement variants → e
 
 Goal, products and channels remain near the brief. Optional details include audience, offer, tone, keywords, complete required/prohibited phrases, dates, website/email dimensions and budget. Budget distinguishes currency, period and daily/lifetime intent; allocations use the same basis and must total correctly. Empty amounts remain empty, zero remains zero. Optional CPA/ROAS/margin values are assumptions, not forecasts, private economics or spending authorization.
 
-The hosted local planner supports bounded festive, cool and editorial cues and exposes its limits. Keywords can guide those cues; they are not exported paid-search account configuration. Palette, framing, spacing and supported placement copy are editable. Arbitrary scene instructions remain review context; live semantic interpretation is deferred. Current supported instructions take precedence over brand defaults and remembered tone; remembered spacing is captured into a new plan.
+The hosted local planner supports bounded festive, cool and editorial cues and exposes its limits. Keywords can guide those cues; they are not exported paid-search account configuration. Art direction, approved image, framing, spacing, text visibility and supported placement copy are editable. Recompose selected variant applies those values to the actual raster. Arbitrary scene instructions remain review context; live semantic interpretation is deferred. Current supported instructions take precedence over brand defaults and remembered tone; remembered spacing is captured into a new plan.
 
 Default required-phrase scope is **campaign-copy**: actual headline, long-headline, description or CTA fields. A complete 31–90 weighted-character phrase can use a long field while shorter headline alternatives remain intact. A phrase exceeding Google's 90-character supported long-copy limit conflicts when Google is selected. Use it as a website body note or shorten the requirement; it is not silently moved, split or truncated. Required/prohibited contradictions require resolution.
 
 ## Main journey
 
-1. Explore a finished Cosmic Cat campaign, or describe a new campaign and choose its products and placements.
+1. Explore a finished Cosmic Cat campaign, or choose a store, search its catalog and select products/variants before describing the campaign.
 2. Inspect bundled brand facts, original photos and page/inspiration roles, or add confirmed facts and owned PNG/JPEG uploads. Website import is **Local service required** and disabled on Pages; a saved URL alone is not a successful import. Confirm actual product facts and photo associations.
 3. Interpret, inspect and edit the creative plan. Resolve conflicting instructions and confirm the two directions.
 4. Create only selected compatible outputs. The engine encodes real rasters, retains recipes, checks measurements and surfaces unknown rules.
 5. Review a family or exact variant. Approve selected current versions intentionally, edit copy, reject or revise a targeted output.
-6. Preview landing content and export a current approved destination packet. The manifest identifies each exact approved version; exporting does not publish.
+6. Preview landing content and download current approved assets, or preview channel publishing to a clearly marked sample target. Review destination-specific mappings, create a local demo handoff where complete and download its package. The manifest identifies exact approved versions; no action publishes remotely.
 
-The protected original photos are complete frames. A no-holiday request using Candy Cane's original festive photo conflicts until an alternative approved reference is supplied. The Christmas and contrast examples use Solar Surge so the same verified product can support different surrounding designs.
+The protected original photos are complete frames. A no-holiday request using Candy Cane's original festive photo conflicts until an alternative approved reference is supplied. The prepared sample pairs Candy Cane in a warm photographic story with Solar Surge in a contemporary editorial. Prototype review also compares both systems on both products. A contrasting summer campaign can reuse Solar Surge without introducing holiday motifs.
+
+## Catalog consistency
+
+The catalog and editable campaign brief are separate records. Search, store browsing and refresh do not rewrite a confirmed campaign. Product/variant/image selection captures factual context explicitly. Applying later catalog updates changes that snapshot and invalidates relevant output approvals; failed and partial refreshes preserve unaffected records. Duplicate names across stores do not share identity. [Catalog contract](catalog.md).
 
 ## Review and revision
 
@@ -54,6 +60,12 @@ stateDiagram-v2
 Conditions are stored separately in the [typed domain](../src/domain/studio.ts); “Downloaded” describes an export action. Warnings such as Meta **Not checked** or missing platform policy approval remain visible even after merchant review. Merchant approval is not a connected account, a platform policy decision or proof of creative effectiveness.
 
 A single-variant revision creates one new version and clears that variant's approval. A family change invalidates dependent variants in that family. Copy/offer changes preserve text-free images when their visual dependencies remain current, while affected overlaid images, copy and handoff need review. Current required sources are checked again at export.
+
+## Destination handoff
+
+Google maps a Performance Max asset group with a sample campaign and separately reviewed brand assets. Meta maps campaign/ad-set context and conceptual ad drafts. TikTok maps campaign/ad-group inputs and blocks completion when actual video is missing. Website packages responsive hero assets and content. JSON/CSV are human-review artifacts, not executable vendor requests.
+
+A completed demo handoff references exact approved versions and says nothing was sent. Duplicate clicks reuse the same signature. Revisions require fresh approval and an explicit revised handoff; older records stay unchanged. An incomplete download names its blockers and omits stale/rejected/invalid artifacts. [Mappings and rule registry](channel-handoff.md).
 
 ## Recovery and continuity
 

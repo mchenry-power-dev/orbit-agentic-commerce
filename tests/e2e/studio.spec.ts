@@ -201,7 +201,7 @@ async function approve(page: Page, asset: StudioAsset) {
 async function packet(page: Page) {
   const downloading = page.waitForEvent("download");
   await page
-    .getByRole("button", { name: "Export approved portfolio", exact: true })
+    .getByRole("button", { name: "Download assets", exact: true })
     .click();
   const downloaded = await downloading,
     path = await downloaded.path();
@@ -298,7 +298,7 @@ test("finished example, intentional selected approvals, targeted revision, exact
   });
   expect(
     await image.evaluate((img: HTMLImageElement) => img.naturalWidth),
-  ).toBe(1200);
+  ).toBe(768);
   await page
     .getByRole("button", { name: "Explore a finished campaign", exact: true })
     .click();
@@ -353,7 +353,7 @@ test("finished example, intentional selected approvals, targeted revision, exact
   expect(current.assets.filter((a) => a.approval)).toHaveLength(15);
   await expect(
     page.getByRole("button", {
-      name: "Export approved portfolio",
+      name: "Download assets",
       exact: true,
     }),
   ).toBeEnabled();
@@ -446,7 +446,7 @@ test("new Christmas and summer families change real artwork while preserving the
     for (const asset of item.assets.filter((a) => a.kind === "image")) {
       const current = version(asset),
         raster = current.raster!;
-      expect(current.recipe?.productIds).toEqual(["cosmic-solar-surge"]);
+      expect(current.recipe?.productIds).toEqual(["cosmic-cat::solar-surge"]);
       expect(current.recipe?.productPhotos).toEqual([
         "/brand/cosmic-cat/solar-surge.png",
       ]);
@@ -887,9 +887,9 @@ test("no-key demo explains unavailable services and keeps supported composition 
     })
     .first();
   await expect(visualMode.locator("option")).toHaveText([
-    "Festive lights composition",
-    "Cool, minimal composition",
-    "Editorial composition",
+    "Warm festive palette",
+    "Cool daytime palette",
+    "Editorial palette",
   ]);
   await visualMode.selectOption("editorial");
   await page
@@ -909,7 +909,7 @@ test("no-key demo explains unavailable services and keeps supported composition 
     composition: "product-center",
   });
   await expect(page.locator(".capability-mode")).toContainText(
-    "Local photo composition · no model calls",
+    "Demo mode · Photo composition · Simulated publishing",
   );
 });
 
@@ -1221,7 +1221,7 @@ test("edited copy removes its approval, repairs the stale handoff and exports th
     .selectOption("google");
   await expect(
     page.getByRole("button", {
-      name: "Export approved portfolio",
+      name: "Download assets",
       exact: true,
     }),
   ).toBeEnabled();
@@ -1252,7 +1252,7 @@ test("edited copy removes its approval, repairs the stale handoff and exports th
   ).toBe(true);
   await expect(
     page.getByRole("button", {
-      name: "Export approved portfolio",
+      name: "Download assets",
       exact: true,
     }),
   ).toBeDisabled();
@@ -1271,7 +1271,7 @@ test("edited copy removes its approval, repairs the stale handoff and exports th
   );
   await expect(
     page.getByRole("button", {
-      name: "Export approved portfolio",
+      name: "Download assets",
       exact: true,
     }),
   ).toBeEnabled();

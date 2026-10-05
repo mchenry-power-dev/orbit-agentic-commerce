@@ -1,14 +1,16 @@
 {
   "generatedBy": "node scripts/generate-studio-sample.mjs",
   "pipeline": "StudioEngine + interpretLocalBrief + renderComposition, in an isolated Chromium context",
-  "fixtureTime": "2026-10-03T12:00:00.000Z",
+  "fixtureTime": "2026-10-05T12:00:00.000Z",
   "mode": "prebuilt-sample",
-  "rendering": "Local photo composition; original full-frame Cosmic Cat photos, designed frames and drawn light accents. No generated photographed scene.",
+  "rendering": "Local photo composition: large intact original Cosmic Cat photos. Photographic-story layouts extend soft-focus material from the same photo; editorial layouts use paper tones and typography. No drawn ornaments or generated photographed scene.",
   "rasterEncoding": "Native placement dimensions, browser Canvas JPEG quality 0.90; no arbitrary downsampling.",
   "approvals": 0,
-  "totalBytes": 2347859,
+  "totalBytes": 3862566,
   "assetCount": 15,
   "imageCount": 12,
+  "productCount": 2,
+  "thumbnailEncoding": "Up to 768 px, JPEG quality 0.78, resampled from the exact finished export canvas.",
   "sources": "Owner-authorized bounded public snapshot in src/fixtures/cosmic-cat.ts; retrieved 2026-10-03.",
   "reproducibility": "IDs, timestamps and input snapshot are fixed. Canvas/font/JPEG bytes can differ across browser or operating-system versions."
 }

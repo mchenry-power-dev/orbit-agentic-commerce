@@ -1,5 +1,7 @@
 import type { ValidationFinding } from "./index";
 import type { GeneratedImage, SemanticPlan } from "./service";
+import type { CatalogSelection, StoreCatalog } from "./catalog";
+import type { DemoHandoff } from "./handoff";
 
 export type Channel = "google" | "meta" | "tiktok" | "website" | "email";
 export type CapabilityMode =
@@ -15,6 +17,7 @@ export interface Source {
   image?: string;
 }
 export interface BrandProduct {
+  catalog?: CatalogSelection;
   id: string;
   name: string;
   description: string;
@@ -81,6 +84,9 @@ export interface StudioBrief {
   >;
 }
 export interface CreativeDirection {
+  artDirection?: "scene-led" | "editorial";
+  productIds?: string[];
+  textOverlay?: boolean;
   id: string;
   name: string;
   theme: string;
@@ -145,6 +151,7 @@ export interface StudioPlan {
   };
 }
 export interface CompositionRecipe {
+  artDirection?: "scene-led" | "editorial";
   version: 1;
   directionId: string;
   placementId: string;
@@ -173,6 +180,7 @@ export interface StudioVersion {
   mode: CapabilityMode;
   recipe?: CompositionRecipe;
   raster?: {
+    previewDataUrl?: string;
     dataUrl: string;
     mime: "image/png" | "image/jpeg";
     width: number;
@@ -185,6 +193,17 @@ export interface StudioVersion {
   sourceIds: string[];
 }
 export interface StudioAsset {
+  recipeOverrides?: Partial<
+    Pick<
+      CompositionRecipe,
+      | "artDirection"
+      | "composition"
+      | "headline"
+      | "cta"
+      | "textOverlay"
+      | "spacing"
+    >
+  > & { productId?: string };
   id: string;
   familyId: string;
   placementId: string;
@@ -208,6 +227,7 @@ export interface StudioRun {
   revisionNote?: string;
 }
 export interface StudioCampaign {
+  handoffs?: DemoHandoff[];
   id: string;
   brief: StudioBrief;
   brand: StudioBrand;
@@ -229,6 +249,7 @@ export interface StudioCampaign {
   >;
 }
 export interface StudioState {
+  catalogs?: StoreCatalog[];
   schemaVersion: 2;
   campaigns: StudioCampaign[];
   brands: StudioBrand[];
